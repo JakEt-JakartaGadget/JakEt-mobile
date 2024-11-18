@@ -1,4 +1,4 @@
-# Proyek Tengah Semester C02 - PBP Gasal 2024/2025
+# Proyek Akhir Semester C02 - PBP Gasal 2024/2025
 - [Nama Aplikasi](#nama-aplikasi-jaket)
 - [Profil Kelompok](#-kelompok-c02---jaket-)
 - [Cerita dan Manfaat Aplikasi](#cerita-dan-manfaat-aplikasi)
@@ -30,32 +30,31 @@ Lebih dari itu, JakEt berperan sebagai penghubung antara pengguna dan penyedia l
 Dengan **JakEt**, kami berharap dapat memberikan pengalaman digital yang lebih mudah, terjangkau, dan aman bagi warga Jakarta Selatan, serta mendukung gaya hidup modern yang semakin mengandalkan teknologi. 
 
 
+
 ## 🖥️ Modul Aplikasi 🖥️
 1. Autentikasi pengguna (apakah pengguna yang login merupakan admin atau user)
     - Dikerjakan oleh: Anthony Edbert Feriyanto
-2. Homepage (Aplikasi Django ini berfungsi untuk menampilkan halaman utama antarmuka dataset product dalam web ini. pada antarmuka tersebut juga disediakan fitur sorting, filter, dan search. Fitur filter berupa pemfilteran berdasarkan kategori product.)
+1. Homepage (Aplikasi Django ini berfungsi untuk menampilkan halaman utama antarmuka dataset product dalam aplikasi mobile ini. pada antarmuka tersebut juga disediakan fitur sorting, filter, dan search. Fitur filter berupa pemfilteran berdasarkan kategori product.)
     - Dikerjakan oleh: Anthony Edbert Feriyanto
-3. Dashboard App
+1. Dashboard App
     - Dikerjakan oleh: Anthony Edbert Feriyanto & Ida Made Revindra Dikta Mahendra
-4. User Discussion Forum (User yang login dapat memulai dan mengikuti diskusi mengenai produk atau topik)
+1. User Discussion Forum (User yang login dapat memulai dan mengikuti diskusi mengenai produk atau topik)
     - Dikerjakan oleh: Ida Made Revindra Dikta Mahendra
-5. Detail Product App (Memuat informasi detail mengenai suatu product dan memberikan link untuk melakukan pembelanjaan)
+1. Detail Product App (Memuat informasi detail mengenai suatu product dan memberikan link untuk melakukan pembelanjaan)
     - Dikerjakan oleh: Anthony Edbert Feriyanto
-6. Service Center App (Memuat informasi mengenai service center yang tersedia)
+1. Service Center App (Aplikasi Django ini berisi informasi mengenai service center yang tersedia)
     - Dikerjakan oleh: Bertrand Gwynfory Iskandar
-7. Tiket App (Fitur untuk generate sebuah tiket melalui _appointment_ untuk service center)
+1. Tiket App (Aplikasi yang digunakan untuk generate sebuah tiket melalui _appointment_ untuk service center)
     - Dikerjakan oleh: Bertrand Gwynfory Iskandar
-8. Article About Gadget (Memuat artikel yang membahas informasi update terbaru seputar gadget)
+1. Article About Gadget (Memuat artikel yang membahas informasi update terbaru seputar gadget)
 	- Dikerjakan oleh : Eva Yunia Aliyanshah
-9. User Profile (Memuat halaman yang menampilkan informasi detail mengenai user seperti, nama, email, no telepon, dan lainnya)
+1. User Profile (Memuat halaman yang menampilkan informasi detail mengenai user seperti, nama, email, no telepon, dan lainnya)
 	- Dikerjakan oleh : Eva Yunia Aliyanshah
-10. Wishlist & Favorites (Memuat fitur yang memungkinkan pengguna dapat menambahkan gadget ke daftar wishlist atau favorit mereka untuk melacak gadget yang menarik dan bisa dibandingkan dengan produk yang punya kategori sama)
+1. Wishlist & Favorites (Memuat fitur yang memungkinkan pengguna dapat menambahkan gadget ke daftar wishlist atau favorit mereka untuk melacak gadget yang menarik dan bisa dibandingkan dengan produk yang punya kategori sama)
     - Dikerjakan oleh : Anthony Edbert Feriyanto
-11. Comparison Tool (Memuat fitur yang memungkinkan pengguna untuk membandingkan spesifikasi dan harga beberapa gadget dari dataset yang sudah diambil (tergantung kategorinya, misal : laptop, mobiles, headphones, dan dataset lainnya) secara berdampingan. Ini sangat membantu pengguna dalam membuat keputusan berdasarkan perbandingan yang objektif.)
+1. Comparison Tool (Memuat fitur yang memungkinkan pengguna untuk membandingkan spesifikasi dan harga beberapa gadget dari dataset yang sudah diambil (tergantung kategorinya, misal : laptop, mobiles, headphones, dan dataset lainnya) secara berdampingan. Ini sangat membantu pengguna dalam membuat keputusan berdasarkan perbandingan yang objektif.)
     - Dikerjakan oleh : Abraham Jordy Ollen
-12. Review App (Memuat review terhadap suatu produk yang dapat dilihat melalui Detail App)
-    - Dikerjakan oleh : Anthony Edbert Feriyanto
-13. Customer Service Chat (Chat antara User yang login dengan admin)
+1. Customer Service Chat (Chat antara User yang login dengan admin)
     - Dikerjakan oleh : Ida Made Revindra Dikta Mahendra
 
 ## 📈 Sumber Initial Dataset 📈
@@ -65,7 +64,7 @@ Dengan **JakEt**, kami berharap dapat memberikan pengalaman digital yang lebih m
 ## 🧑🏻 Persona 🧑🏻
 
 **1. User yang tidak login**
-- Meninjau halaman web dan produk-produk di dalamnya.
+- Meninjau aplikasi mobile dan produk-produk di dalamnya.
 - Memanfaatkan fitur search and filter untuk menemukan produk yang diinginkan.
 - Meninjau artikel terbaru mengenai gadget yang tersedia di platform.
 
@@ -86,12 +85,42 @@ Dengan **JakEt**, kami berharap dapat memberikan pengalaman digital yang lebih m
 - Mengelola informasi service center yang tersedia
 - Mengelola dan memperbarui dataset produk yang digunakan dalam aplikasi
 
-## Alur Pengintegrasian dengan web service untuk terhubung dengan aplikasi web yang sudah dibuat saat proyek tengah semester.
+## 🔄 Alur Integrasi Aplikasi Mobile dan Web (Django - Flutter) 🔄
 
+1. **Persiapan Proyek**  
+   - Tambahkan package/library seperti `http` pada Flutter agar aplikasi dapat mengirim request HTTP ke server Django.  
+   - Pada server Django, pastikan REST API diimplementasikan menggunakan Django REST Framework (DRF) atau fungsi JSONResponse.  
 
-## 🌐 Tautan Deployment Aplikasi 🌐
-Tautan aplikasi PWS: [TO BE ANNOUNCED](http://anthony-edbert-jaket.pbp.cs.ui.ac.id)
+2. **Autentikasi dan Otorisasi**  
+   - Implementasikan autentikasi berbasis cookie dengan menggunakan library seperti `pbp_django_auth` di Flutter.  
+   - Gunakan mekanisme login, logout, dan registrasi dari server Django untuk otorisasi pengguna.  
+   - Pastikan semua request ke server bersifat terautentikasi sesuai peran pengguna (e.g., reader atau writer).  
 
+3. **Pengiriman Request dari Aplikasi Mobile**  
+   - Aplikasi Flutter mengirimkan request (GET, POST, atau lainnya) ke server Django untuk mengambil atau memodifikasi data.  
+   - Endpoint spesifik digunakan untuk mengambil dataset.  
 
+4. **Proses Request di Server Django**  
+   - Django menerima dan memproses request, termasuk validasi data dan autentikasi pengguna.  
+   - Django berinteraksi dengan database menggunakan ORM (Object Relational Mapping) untuk mengakses atau memodifikasi data.  
 
+5. **Serialization Data**  
+   - Data yang diambil dari database diubah menjadi format JSON menggunakan Django Serializers atau fungsi bawaan seperti `JsonResponse`.  
 
+6. **Pengiriman Response ke Flutter**  
+   - Server Django mengirimkan response dalam format JSON yang sudah terstruktur.  
+   - Response ini mencakup data yang diminta (e.g., daftar produk, detail produk, customer service chat) atau pesan status (e.g., berhasil atau gagal).  
+
+7. **Parsing JSON di Flutter**  
+   - Aplikasi Flutter menerima response JSON.
+
+8. **Pengelolaan Data di Aplikasi Mobile**  
+   - Data yang telah di-parse disimpan dalam model atau state management `Provider` di Flutter.
+
+9. **Desain Interface Pengguna (UI)**  
+   - Desain UI pada Flutter dirancang berdasarkan desain situs web yang ada untuk konsistensi.  
+   - Data produk yang diterima ditampilkan dalam interface user menggunakan widget seperti `ListView`, `GridView`, atau lainnya.  
+
+10. **Integrasi Front-End dan Back-End**  
+    - Integrasikan Flutter dengan server Django menggunakan konsep asynchronous HTTP melalui `Future` dan `async/await`.  
+    - Lakukan testing untuk memastikan data yang dikirimkan dan diterima sesuai dengan spesifikasi API.  
