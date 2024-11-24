@@ -41,9 +41,9 @@ Dengan **JakEt**, kami berharap dapat memberikan pengalaman digital yang lebih m
     - Dikerjakan oleh: Ida Made Revindra Dikta Mahendra
 5. Detail Product App (Memuat informasi detail mengenai suatu product dan memberikan link untuk melakukan pembelanjaan)
     - Dikerjakan oleh: Anthony Edbert Feriyanto
-6. Service Center App (Aplikasi Django ini berisi informasi mengenai service center yang tersedia)
+6. Service Center App (Memuat informasi mengenai service center yang tersedia)
     - Dikerjakan oleh: Bertrand Gwynfory Iskandar
-7. Tiket App (Aplikasi yang digunakan untuk generate sebuah tiket melalui _appointment_ untuk service center)
+7. Tiket App (Fitur untuk generate sebuah tiket melalui _appointment_ untuk service center)
     - Dikerjakan oleh: Bertrand Gwynfory Iskandar
 8. Article About Gadget (Memuat artikel yang membahas informasi update terbaru seputar gadget)
 	- Dikerjakan oleh : Eva Yunia Aliyanshah
