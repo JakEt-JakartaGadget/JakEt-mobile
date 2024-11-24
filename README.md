@@ -42,7 +42,7 @@ Dengan **JakEt**, kami berharap dapat memberikan pengalaman digital yang lebih m
     - Dikerjakan oleh: Ida Made Revindra Dikta Mahendra
 1. Detail Product App (Memuat informasi detail mengenai suatu product dan memberikan link untuk melakukan pembelanjaan)
     - Dikerjakan oleh: Anthony Edbert Feriyanto
-1. Service Center App (Memuat informasi mengenai service center yang tersedia dan terdapat fitur untuk membuat _appointment_ dengan service center yang dipilih)
+1. Service Center App (Memuat informasi mengenai service center yang tersedia, dan terdapat fitur untuk membuat _appointment_ dengan service center yang dipilih)
     - Dikerjakan oleh: Bertrand Gwynfory Iskandar
 1. Tiket App (Fitur yang digunakan untuk generate sebuah tiket melalui _appointment_ untuk service center)
     - Dikerjakan oleh: Bertrand Gwynfory Iskandar
