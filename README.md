@@ -1,11 +1,11 @@
 # Proyek Akhir Semester C02 - PBP Gasal 2024/2025
 - [Nama Aplikasi](#nama-aplikasi-jaket)
-- [Profil Kelompok](#-kelompok-c02---jaket-)
+- [Profil Kelompok](#kelompok-c02---jaket)
 - [Cerita dan Manfaat Aplikasi](#cerita-dan-manfaat-aplikasi)
-- [Modul Aplikasi](#️-modul-aplikasi-️)
+- [Modul Aplikasi](#modul-aplikasi)
 - [Sumber Initial Dataset](#sumber-initial-dataset)
-- [Persona](#-persona-)
-- [Deployment](#-tautan-deployment-aplikasi-)
+- [Persona](#persona)
+- [Alur Integrasi Aplikasi Mobile dan Web](#alur-integrasi-aplikasi-mobile-dan-web-django---flutter)
 
 # Nama Aplikasi: JakEt
 
