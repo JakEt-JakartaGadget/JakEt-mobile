@@ -6,6 +6,7 @@
 - [Sumber Initial Dataset](#sumber-initial-dataset)
 - [Persona](#persona)
 - [Alur Integrasi Aplikasi Mobile dan Web](#alur-integrasi-aplikasi-mobile-dan-web-django---flutter)
+- [Desain Aplikasi](#tautan-desain-aplikasi)
 
 # Nama Aplikasi: JakEt
 
@@ -123,4 +124,7 @@ Dengan **JakEt**, kami berharap dapat memberikan pengalaman digital yang lebih m
 
 10. **Integrasi Front-End dan Back-End**  
     - Integrasikan Flutter dengan server Django menggunakan konsep asynchronous HTTP melalui `Future` dan `async/await`.  
-    - Lakukan testing untuk memastikan data yang dikirimkan dan diterima sesuai dengan spesifikasi API.  
+    - Lakukan testing untuk memastikan data yang dikirimkan dan diterima sesuai dengan spesifikasi API.
+   
+## 🎨 Tautan Desain Aplikasi 🎨
+Tautan desain aplikasi: https://www.figma.com/design/HcGymRYfGfosqGJk7KvEc5/JakEt?node-id=789-426&t=8MfI33vzERljEQzc-1
