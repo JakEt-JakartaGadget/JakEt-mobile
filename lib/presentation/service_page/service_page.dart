@@ -45,9 +45,7 @@ class _ServiceCenterPageState extends State<ServiceCenterPage> {
 
   final TextEditingController _searchController = TextEditingController();
 
-  // Updated sort options to include 'Rating Ascending'
   String _selectedSortOption = 'Alphabetical\n(A-Z)';
-
   List<String> sortOptions = [
     'Alphabetical\n(A-Z)',
     'Alphabetical\n(Z-A)',
@@ -138,8 +136,7 @@ class _ServiceCenterPageState extends State<ServiceCenterPage> {
                         prefixIcon: const Icon(Icons.search),
                         filled: true,
                         fillColor: Colors.grey[200],
-                        contentPadding: const EdgeInsets.symmetric(
-                            vertical: 0, horizontal: 16),
+                        contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(16.0),
                           borderSide: BorderSide.none,
@@ -168,12 +165,10 @@ class _ServiceCenterPageState extends State<ServiceCenterPage> {
                         color: Colors.black,
                       ),
                       decoration: InputDecoration(
-                        labelStyle: const TextStyle(
-                            color: Colors.black, fontSize: 12.0),
+                        labelStyle: const TextStyle(color: Colors.black, fontSize: 12.0),
                         filled: true,
                         fillColor: const Color.fromARGB(255, 107, 164, 244),
-                        contentPadding: const EdgeInsets.symmetric(
-                            vertical: 0, horizontal: 16),
+                        contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(16.0),
                           borderSide: BorderSide.none,
@@ -188,8 +183,7 @@ class _ServiceCenterPageState extends State<ServiceCenterPage> {
             // FutureBuilder for data
             FutureBuilder(
               future: fetchServiceCenters(request),
-              builder:
-                  (context, AsyncSnapshot<List<Product>> snapshot) {
+              builder: (context, AsyncSnapshot<List<Product>> snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(
                     child: Padding(
@@ -209,8 +203,7 @@ class _ServiceCenterPageState extends State<ServiceCenterPage> {
                     ),
                   );
                 } else {
-                  List<Product> serviceCenters =
-                      filterAndSortData(snapshot.data!);
+                  List<Product> serviceCenters = filterAndSortData(snapshot.data!);
                   if (serviceCenters.isEmpty) {
                     return const Padding(
                       padding: EdgeInsets.only(top: 50.0),
@@ -223,8 +216,7 @@ class _ServiceCenterPageState extends State<ServiceCenterPage> {
                       ),
                     );
                   }
-                  final double screenWidth =
-                      MediaQuery.of(context).size.width;
+                  final double screenWidth = MediaQuery.of(context).size.width;
                   final double itemWidth = (screenWidth / 2) - 24;
                   final double itemHeight = itemWidth * 2.25;
 
@@ -235,15 +227,13 @@ class _ServiceCenterPageState extends State<ServiceCenterPage> {
                       runSpacing: 16,
                       children: serviceCenters.map((product) {
                         final serviceCenter = product.fields;
-                        final String imageUrl =
-                            'http://10.0.2.2:8000/media/' + serviceCenter.image;
+                        final String imageUrl = 'http://10.0.2.2:8000/media/' + serviceCenter.image;
                         return GestureDetector(
                           onTap: () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) =>
-                                    ServiceCenterDetailPage(serviceCenter: product),
+                                builder: (context) => ServiceCenterDetailPage(serviceCenter: product),
                               ),
                             );
                           },
@@ -253,8 +243,7 @@ class _ServiceCenterPageState extends State<ServiceCenterPage> {
                               height: itemHeight,
                               decoration: BoxDecoration(
                                 color: Colors.white,
-                                borderRadius:
-                                    BorderRadius.circular(16.0),
+                                borderRadius: BorderRadius.circular(16.0),
                                 boxShadow: const [
                                   BoxShadow(
                                     color: Colors.black12,
@@ -264,13 +253,11 @@ class _ServiceCenterPageState extends State<ServiceCenterPage> {
                                 ],
                               ),
                               child: Column(
-                                crossAxisAlignment:
-                                    CrossAxisAlignment.stretch,
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: [
                                   // Fixed Height Image Section
                                   ClipRRect(
-                                    borderRadius:
-                                        const BorderRadius.only(
+                                    borderRadius: const BorderRadius.only(
                                       topLeft: Radius.circular(16.0),
                                       topRight: Radius.circular(16.0),
                                     ),
@@ -282,35 +269,27 @@ class _ServiceCenterPageState extends State<ServiceCenterPage> {
                                   ),
                                   // Details Section
                                   Padding(
-                                    padding:
-                                        const EdgeInsets.all(12.0),
+                                    padding: const EdgeInsets.all(12.0),
                                     child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text(
                                           serviceCenter.name,
                                           style: const TextStyle(
                                             fontSize: 16.0,
-                                            fontWeight:
-                                                FontWeight.bold,
+                                            fontWeight: FontWeight.bold,
                                           ),
                                           maxLines: 1,
-                                          overflow:
-                                              TextOverflow.ellipsis,
+                                          overflow: TextOverflow.ellipsis,
                                         ),
                                         const SizedBox(height: 4),
                                         Row(
                                           children: [
-                                            renderStars(
-                                                double.parse(
-                                                    serviceCenter
-                                                        .rating)),
+                                            renderStars(double.parse(serviceCenter.rating)),
                                             const SizedBox(width: 4),
                                             Text(
                                               '${serviceCenter.rating} (${serviceCenter.totalReviews})',
-                                              style: const TextStyle(
-                                                  fontSize: 12.0),
+                                              style: const TextStyle(fontSize: 12.0),
                                             ),
                                           ],
                                         ),
@@ -319,34 +298,28 @@ class _ServiceCenterPageState extends State<ServiceCenterPage> {
                                           "Location",
                                           style: TextStyle(
                                             fontSize: 14.0,
-                                            fontWeight:
-                                                FontWeight.bold,
+                                            fontWeight: FontWeight.bold,
                                           ),
                                         ),
                                         Text(
                                           serviceCenter.address,
                                           maxLines: 2,
-                                          overflow:
-                                              TextOverflow.ellipsis,
-                                          style: const TextStyle(
-                                              fontSize: 14.0),
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(fontSize: 14.0),
                                         ),
                                         const SizedBox(height: 4),
                                         const Text(
                                           "Contact",
                                           style: TextStyle(
                                             fontSize: 14.0,
-                                            fontWeight:
-                                                FontWeight.bold,
+                                            fontWeight: FontWeight.bold,
                                           ),
                                         ),
                                         Text(
                                           serviceCenter.contact,
                                           maxLines: 1,
-                                          overflow:
-                                              TextOverflow.ellipsis,
-                                          style: const TextStyle(
-                                              fontSize: 14.0),
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(fontSize: 14.0),
                                         ),
                                       ],
                                     ),
@@ -364,21 +337,15 @@ class _ServiceCenterPageState extends State<ServiceCenterPage> {
                                           // Handle scheduling logic
                                         },
                                         style: ElevatedButton.styleFrom(
-                                          backgroundColor:
-                                              const Color.fromARGB(
-                                                  255, 4, 93, 236),
+                                          backgroundColor:const Color.fromARGB(255, 4, 93, 236),
                                           shape:
                                               RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(
-                                                    20.0),
+                                            borderRadius: BorderRadius.circular(20.0),
                                           ),
                                         ),
                                         child: const Row(
-                                          mainAxisSize:
-                                              MainAxisSize.min,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
+                                          mainAxisSize: MainAxisSize.min,
+                                          crossAxisAlignment: CrossAxisAlignment.center,
                                           children: [
                                             Text(
                                               'Schedule Appointment',
