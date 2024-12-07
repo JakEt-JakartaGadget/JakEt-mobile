@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_this
+
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -22,7 +24,7 @@ enum ImageType { svg, png, network, svgNetwork, file, unknown }
 // ignore_for_file: must_be_immutable
 class CustomImageView extends StatelessWidget {
   CustomImageView(
-      {this.imagePath,
+      {super.key, this.imagePath,
       this.height,
       this.width,
       this.color,
@@ -105,7 +107,7 @@ class CustomImageView extends StatelessWidget {
     if (imagePath != null) {
       switch (imagePath!.imageType) {
         case ImageType.svg:
-          return Container(
+          return SizedBox(
             height: height,
             width: width,
             child: SvgPicture.asset(
@@ -134,7 +136,7 @@ class CustomImageView extends StatelessWidget {
             fit: fit,
             imageUrl: imagePath!,
             color: color,
-            placeholder: (context, url) => Container(
+            placeholder: (context, url) => SizedBox(
               height: 30,
               width: 30,
               child: LinearProgressIndicator(
@@ -150,7 +152,7 @@ class CustomImageView extends StatelessWidget {
             ),
           );
         case ImageType.svgNetwork:
-          return Container(
+          return SizedBox(
             height: height,
             width: width,
             child: SvgPicture.network(
@@ -175,6 +177,6 @@ class CustomImageView extends StatelessWidget {
           );
       }
     }
-    return SizedBox();
+    return const SizedBox();
   }
 }

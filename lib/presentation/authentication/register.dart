@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart'; 
@@ -58,13 +60,13 @@ class _RegisterPageState extends State<RegisterPage> {
                         color: Colors.black,
                       ),
                     ),
-                    SizedBox(width: 4.0),
+                    const SizedBox(width: 4.0),
                     Text(
                       'Account!',
                       style: GoogleFonts.poppins(
                         fontSize: 24.0,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF6D0CC9),
+                        color: const Color(0xFF6D0CC9),
                       ),
                     ),
                   ],
@@ -74,7 +76,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   'Username',
                   style: GoogleFonts.poppins(
                     fontSize: 12.0,
-                    color: Color(0xFF6D0CC9),
+                    color: const Color(0xFF6D0CC9),
                   ),
                 ),
                 const SizedBox(height: 4.0),
@@ -113,7 +115,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   'Password',
                   style: GoogleFonts.poppins(
                     fontSize: 12.0,
-                    color: Color(0xFF6D0CC9),
+                    color: const Color(0xFF6D0CC9),
                   ),
                 ),
                 const SizedBox(height: 4.0),
@@ -153,7 +155,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   'Password Confirmation',
                   style: GoogleFonts.poppins(
                     fontSize: 12.0,
-                    color: Color(0xFF6D0CC9),
+                    color:const Color(0xFF6D0CC9),
                   ),
                 ),
                 const SizedBox(height: 4.0),
@@ -250,7 +252,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       child: Text(
                         'Login here',
                         style: GoogleFonts.inter(
-                          color: Color(0xFF2E29A6),
+                          color: const Color(0xFF2E29A6),
                           fontSize: 13.0,
                         ),
                       ),
@@ -289,14 +291,14 @@ class _RegisterPageState extends State<RegisterPage> {
         snackPosition: SnackPosition.TOP,
         backgroundColor: Colors.green.withOpacity(0.9),
         colorText: Colors.white,
-        icon: Icon(
+        icon: const Icon(
           Icons.check_circle,
           color: Colors.white,
         ),
-        duration: Duration(seconds: 2),
+        duration: const Duration(seconds: 1),
       );
 
-      Future.delayed(Duration(seconds: 1), () {
+      Future.delayed(const Duration(seconds: 1), () {
         Get.off(() => const LoginPage());
       });
     } else {

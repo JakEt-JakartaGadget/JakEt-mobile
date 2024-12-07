@@ -1,18 +1,15 @@
 import 'package:flutter/material.dart';
 
 class CustomFloatingButton extends StatelessWidget {
-  CustomFloatingButton(
-      {Key? key,
+  const CustomFloatingButton(
+      {super.key,
       this.alignment,
       this.backgroundColor,
       this.onTap,
       this.width,
       this.height,
       this.decoration,
-      this.child})
-      : super(
-          key: key,
-        );
+      this.child});
 
   final Alignment? alignment;
 
@@ -43,7 +40,7 @@ class CustomFloatingButton extends StatelessWidget {
           width: width ?? 0,
           height: height ?? 0,
           decoration: decoration ??
-              BoxDecoration(
+              const BoxDecoration(
                 // color: theme.colorScheme.onPrimary.withOpacity(1),
                 // borderRadius: BorderRadius.circular(16.h),
               ),
