@@ -37,11 +37,20 @@ dependencies:
   provider: ^6.1.2
   pbp_django_auth: ^0.4.0
   http: ^1.2.2
+  get: ^4.6.5 
+  google_fonts: ^4.0.3
+  lottie: ^2.2.0
+  
 
 dev_dependencies:
   flutter_lints: ^4.0.0
   flutter_test:
     sdk: flutter
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/icon_app/icon.svg"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

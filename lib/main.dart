@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_navigation/src/root/get_material_app.dart';
+import 'package:jaket_mobile/presentation/authentication/login.dart';
 import 'package:jaket_mobile/presentation/homepage/homepage.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
@@ -17,15 +19,13 @@ class MyApp extends StatelessWidget {
         CookieRequest request = CookieRequest();
         return request;
       },
-      child: MaterialApp(
-        title: 'Ayo Belanja',
+      child: GetMaterialApp(
+        title: 'JakEt',
         theme: ThemeData(
           useMaterial3: true,
-          colorScheme: ColorScheme.fromSwatch(
-            primarySwatch: Colors.deepPurple,
-          ).copyWith(secondary: Colors.deepPurple[400]),
-        ),
-        home: const MyHomePage(title: "Jak-Et",),
+          ),
+        home:  LoginPage(),
+        debugShowCheckedModeBanner: false,
       ),
     );
   }
