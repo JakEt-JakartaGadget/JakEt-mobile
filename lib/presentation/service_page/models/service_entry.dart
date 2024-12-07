@@ -1,25 +1,25 @@
 // To parse this JSON data, do
 //
-//     final product = productFromJson(jsonString);
+//     final serviceCenter = serviceCenterFromJson(jsonString);
 
 import 'dart:convert';
 
-List<Product> productFromJson(String str) => List<Product>.from(json.decode(str).map((x) => Product.fromJson(x)));
+List<ServiceCenter> serviceCenterFromJson(String str) => List<ServiceCenter>.from(json.decode(str).map((x) => ServiceCenter.fromJson(x)));
 
-String productToJson(List<Product> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+String serviceCenterToJson(List<ServiceCenter> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
-class Product {
+class ServiceCenter {
     String model;
     String pk;
     Fields fields;
 
-    Product({
+    ServiceCenter({
         required this.model,
         required this.pk,
         required this.fields,
     });
 
-    factory Product.fromJson(Map<String, dynamic> json) => Product(
+    factory ServiceCenter.fromJson(Map<String, dynamic> json) => ServiceCenter(
         model: json["model"],
         pk: json["pk"],
         fields: Fields.fromJson(json["fields"]),

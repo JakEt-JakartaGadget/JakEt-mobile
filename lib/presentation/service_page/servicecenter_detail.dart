@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:jaket_mobile/presentation/service_page/models/service_entry.dart';
 
 class ServiceCenterDetailPage extends StatelessWidget {
-  final Product serviceCenter;
+  final ServiceCenter serviceCenter;
 
   const ServiceCenterDetailPage({Key? key, required this.serviceCenter}) : super(key: key);
 
