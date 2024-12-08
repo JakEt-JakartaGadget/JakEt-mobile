@@ -17,18 +17,17 @@ class _ForumState extends State<Forum> {
     return Scaffold(
         appBar: AppBar(
           leading: CustomIconButton(
-            height: 30,
-            width: 30,
+            height: 20,
+            width: 20,
             padding: const EdgeInsets.only(left: 5),
             decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [Color(0xFF6D0CC9), Color(0xFF2E29A6)],
-              ),
+              color: Color(0xFFB9B9BD),
               borderRadius: BorderRadius.circular(20),
             ),
             child: const Icon(
               Icons.arrow_back_ios,
               color: Colors.white,
+              size: 10.0,
             ),
             onTap: () {
               Navigator.pop(context);
