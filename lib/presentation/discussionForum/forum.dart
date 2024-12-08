@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:jaket_mobile/widgets/custom_elevated_button.dart';
 import 'package:jaket_mobile/widgets/custom_icon_button.dart';
 import 'package:jaket_mobile/presentation/discussionForum/discussion_card.dart';
@@ -30,7 +31,7 @@ class _ForumState extends State<Forum> {
               size: 10.0,
             ),
             onTap: () {
-              Navigator.pop(context);
+              Get.back();
             },
           ),
           title: const Text(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:jaket_mobile/presentation/discussionForum/reply_card.dart';
 import 'package:jaket_mobile/widgets/custom_icon_button.dart';
 
@@ -29,7 +30,7 @@ class _DiscussionState extends State<Discussion> {
               size: 10.0,
             ),
             onTap: () {
-              Navigator.pop(context);
+              Get.back();
             },
           ),
           title: const Text(

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:jaket_mobile/presentation/discussionForum/discussion.dart';
 import 'package:jaket_mobile/widgets/custom_elevated_button.dart';
 
 class NewTopicDialog extends StatelessWidget {
@@ -58,7 +60,12 @@ class NewTopicDialog extends StatelessWidget {
             ),
           ),
           onPressed: () {
-            Navigator.pop(context);
+            Get.back(); // Close the dialog
+            Get.to(
+              Discussion(),
+              transition: Transition.rightToLeft,
+              duration: const Duration(milliseconds: 300),
+            ); // Navigate to the discussion page
           },
         )
       ],

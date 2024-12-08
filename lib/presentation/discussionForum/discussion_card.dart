@@ -146,6 +146,8 @@ class _DiscussionCardState extends State<DiscussionCard> {
                               onPressed: () {
                                 Get.to(
                                   const Discussion(),
+                                  transition: Transition.rightToLeft,
+                                  duration: const Duration(milliseconds: 300),
                                 );
                               },
                             ),
