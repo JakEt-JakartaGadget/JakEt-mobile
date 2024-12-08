@@ -59,6 +59,7 @@ class CustomBottomNavBar extends StatelessWidget {
                   icon: Icon(Icons.favorite_border),
                   label: 'Wishlist',
                 ),
+                
               ],
             ),
           ),

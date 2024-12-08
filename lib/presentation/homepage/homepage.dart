@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:jaket_mobile/widgets/custom_button_nav_bar.dart';
+import 'package:jaket_mobile/widgets/custom_slider.dart'; 
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -27,6 +28,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
         automaticallyImplyLeading: false, 
@@ -76,9 +78,16 @@ class _HomePageState extends State<HomePage> {
       ),
 
       body: SingleChildScrollView(
-        child: Container(
-          padding: const EdgeInsets.all(16.0),
-          child: _widgetOptions.elementAt(_selectedIndex),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const CustomCarousel(),
+            const SizedBox(height: 16.0), 
+            Container(
+              padding: const EdgeInsets.all(16.0),
+              child: _widgetOptions.elementAt(_selectedIndex),
+            ),
+          ],
         ),
       ),
 
