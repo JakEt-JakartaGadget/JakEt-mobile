@@ -13,17 +13,45 @@ class _DiscussionState extends State<Discussion> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Color(0xFFF8F8F8),
+        appBar: AppBar(
+          backgroundColor: Color(0xFFF8F8F8),
+          leading: CustomIconButton(
+            height: 20,
+            width: 20,
+            padding: const EdgeInsets.only(left: 5),
+            decoration: BoxDecoration(
+              color: Color(0xFFB9B9BD),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: const Icon(
+              Icons.arrow_back_ios,
+              color: Colors.white,
+              size: 10.0,
+            ),
+            onTap: () {
+              Navigator.pop(context);
+            },
+          ),
+          title: const Text(
+            'Discussion',
+            style: TextStyle(
+              color: Colors.black,
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+            ),
+          ),
+        ),
+        backgroundColor: const Color(0xFFF8F8F8),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Spacing
-              const SizedBox(height: 35),
+              const SizedBox(height: 15),
 
               // Discussion Topic
-              Text(
+              const Text(
                 'Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet.',
                 textAlign: TextAlign.center,
                 style: TextStyle(
@@ -45,11 +73,13 @@ class _DiscussionState extends State<Discussion> {
                   Container(
                     height: 45,
                     width: 45,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       shape: BoxShape.circle,
                       color: Color(0xFF6D0CC9),
                     ),
-                    child: Icon(
+
+                    // TODO: Replace with user avatarf
+                    child: const Icon(
                       Icons.person,
                       color: Colors.white,
                       size: 30,
@@ -60,7 +90,7 @@ class _DiscussionState extends State<Discussion> {
                   const SizedBox(width: 10),
 
                   // Discussion Owner Username
-                  Column(
+                  const Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
@@ -75,14 +105,14 @@ class _DiscussionState extends State<Discussion> {
                         children: [
                           Icon(
                             Icons.access_time,
-                            color: const Color(0xFF666666),
+                            color: Color(0xFF666666),
                             size: 12,
                           ),
                           SizedBox(width: 4),
                           Text(
                             '2 days ago',
                             style: TextStyle(
-                              color: const Color(0xFF666666),
+                              color: Color(0xFF666666),
                               fontSize: 12,
                             ),
                           ),
@@ -97,7 +127,7 @@ class _DiscussionState extends State<Discussion> {
               const SizedBox(height: 15),
 
               // User Replies Title
-              Text(
+              const Text(
                 'User Replies',
                 textAlign: TextAlign.left,
                 style: TextStyle(
@@ -131,10 +161,10 @@ class _DiscussionState extends State<Discussion> {
                           child: TextField(
                             maxLines: 2,
                             decoration: InputDecoration(
-                              border: OutlineInputBorder(),
+                              border: const OutlineInputBorder(),
                               hintText:
                                   'What\'s on your mind? Share your thoughts or questions...',
-                              hintStyle: TextStyle(
+                              hintStyle: const TextStyle(
                                 fontSize: 12.0,
                                 color: Color(0xFF666666),
                               ),
@@ -142,7 +172,7 @@ class _DiscussionState extends State<Discussion> {
                               filled: true,
                               enabledBorder: OutlineInputBorder(
                                 borderSide:
-                                    BorderSide(color: Color(0xCECECECE)),
+                                    const BorderSide(color: Color(0xCECECECE)),
                                 borderRadius: BorderRadius.circular(8.0),
                               ),
                             ),

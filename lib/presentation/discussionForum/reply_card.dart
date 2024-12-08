@@ -11,7 +11,7 @@ class _ReplyCardState extends State<ReplyCard> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        margin: EdgeInsets.symmetric(vertical: 4),
+        margin: const EdgeInsets.symmetric(vertical: 4),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
@@ -20,7 +20,7 @@ class _ReplyCardState extends State<ReplyCard> {
           ),
         ),
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -28,11 +28,12 @@ class _ReplyCardState extends State<ReplyCard> {
               Container(
                 height: 30,
                 width: 30,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   shape: BoxShape.circle,
-                  color: const Color(0xCECECECE),
+                  color: Color(0xCECECECE),
                 ),
-                child: Icon(
+                // TODO: Replace with user avatar
+                child: const Icon(
                   Icons.person,
                   color: Colors.white,
                   size: 15,
@@ -41,13 +42,13 @@ class _ReplyCardState extends State<ReplyCard> {
 
               // Discussion Preview
               Padding(
-                padding: EdgeInsets.only(left: 16),
+                padding: const EdgeInsets.only(left: 16),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Discussion Detail
-                    Row(
+                    const Row(
                       children: [
                         // Discussion Owner Username
                         Text(
@@ -66,14 +67,14 @@ class _ReplyCardState extends State<ReplyCard> {
                           children: [
                             Icon(
                               Icons.access_time,
-                              color: const Color(0xFF666666),
+                              color: Color(0xFF666666),
                               size: 12,
                             ),
                             SizedBox(width: 4),
                             Text(
                               '2 days ago',
                               style: TextStyle(
-                                color: const Color(0xFF666666),
+                                color: Color(0xFF666666),
                                 fontSize: 12,
                               ),
                             ),
@@ -85,7 +86,7 @@ class _ReplyCardState extends State<ReplyCard> {
                     // Discussion Title
                     Container(
                       width: MediaQuery.of(context).size.width - 160,
-                      child: Text(
+                      child: const Text(
                         'Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet.',
                         style: TextStyle(
                           fontWeight: FontWeight.w600,
