@@ -44,22 +44,26 @@ class ServiceCenterDetails {
     String name;
     String address;
     String contact;
+    String image;
 
     ServiceCenterDetails({
         required this.name,
         required this.address,
         required this.contact,
+        required this.image,
     });
 
     factory ServiceCenterDetails.fromJson(Map<String, dynamic> json) => ServiceCenterDetails(
         name: json["name"],
         address: json["address"],
         contact: json["contact"],
+        image: json["image"],
     );
 
     Map<String, dynamic> toJson() => {
         "name": name,
         "address": address,
         "contact": contact,
+        "image": image,
     };
 }
