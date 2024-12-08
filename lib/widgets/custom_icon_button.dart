@@ -37,18 +37,15 @@ extension IconButtonStyleHelper on CustomIconButton {
 }
 
 class CustomIconButton extends StatelessWidget {
-  CustomIconButton(
-      {Key? key,
+  const CustomIconButton(
+      {super.key,
       this.alignment,
       this.height,
       this.width,
       this.padding,
       this.decoration,
       this.child,
-      this.onTap})
-      : super(
-          key: key,
-        );
+      this.onTap});
 
   final Alignment? alignment;
 
@@ -82,7 +79,7 @@ class CustomIconButton extends StatelessWidget {
             width: width ?? 0,
             padding: padding ?? EdgeInsets.zero,
             decoration: decoration ??
-                BoxDecoration(
+                const BoxDecoration(
                   // color: theme.colorScheme.onPrimary.withOpacity(1),
                   // borderRadius: BorderRadius.circular(20.h),
                 ),

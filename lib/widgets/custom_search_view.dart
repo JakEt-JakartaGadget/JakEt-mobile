@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 // import '../core/app_export.dart';
 
 class CustomSearchView extends StatelessWidget {
-  CustomSearchView(
-      {Key? key,
+  const CustomSearchView(
+      {super.key,
       this.alignment,
       this.width,
       this.scrollPadding,
@@ -24,10 +24,7 @@ class CustomSearchView extends StatelessWidget {
       this.fillColor,
       this.filled = true,
       this.validator,
-      this.onChanged})
-      : super(
-          key: key,
-        );
+      this.onChanged});
 
   final Alignment? alignment;
 
@@ -118,12 +115,12 @@ class CustomSearchView extends StatelessWidget {
               // ),
             ),
         prefixIconConstraints: prefixConstraints ??
-            BoxConstraints(
+            const BoxConstraints(
               // maxHeight: 44.v,
             ),
         suffixIcon: suffix ??
             Padding(
-              padding: EdgeInsets.only(
+              padding: const EdgeInsets.only(
                 // right: 15.h,
               ),
               child: IconButton(
@@ -135,12 +132,12 @@ class CustomSearchView extends StatelessWidget {
               ),
             ),
         suffixIconConstraints: suffixConstraints ??
-            BoxConstraints(
+            const BoxConstraints(
               // maxHeight: 44.v,
             ),
         isDense: true,
         contentPadding: contentPadding ??
-            EdgeInsets.only(
+            const EdgeInsets.only(
               // top: 11.v,
               // right: 11.h,
               // bottom: 11.v,
@@ -148,17 +145,17 @@ class CustomSearchView extends StatelessWidget {
         // fillColor: fillColor ?? appTheme.blueGray50,
         filled: filled,
         border: borderDecoration ??
-            OutlineInputBorder(
+            const OutlineInputBorder(
               // borderRadius: BorderRadius.circular(22.h),
               borderSide: BorderSide.none,
             ),
         enabledBorder: borderDecoration ??
-            OutlineInputBorder(
+            const OutlineInputBorder(
               // borderRadius: BorderRadius.circular(22.h),
               borderSide: BorderSide.none,
             ),
         focusedBorder: borderDecoration ??
-            OutlineInputBorder(
+            const OutlineInputBorder(
               // borderRadius: BorderRadius.circular(22.h),
               borderSide: BorderSide.none,
             ),

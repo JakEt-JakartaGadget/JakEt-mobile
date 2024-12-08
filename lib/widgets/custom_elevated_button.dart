@@ -1,8 +1,10 @@
+// ignore_for_file: unnecessary_this
+
 import 'package:flutter/material.dart';
 import 'base_button.dart';
 
 class CustomElevatedButton extends BaseButton {
-  CustomElevatedButton(
+  const CustomElevatedButton(
       {Key? key,
       this.decoration,
       this.leftIcon,
