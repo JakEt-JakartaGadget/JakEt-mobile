@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:jaket_mobile/presentation/discussionForum/discussion.dart';
+import 'package:jaket_mobile/widgets/custom_elevated_button.dart';
 
 class DiscussionCard extends StatefulWidget {
   const DiscussionCard({super.key});
@@ -11,7 +14,7 @@ class _DiscussionCardState extends State<DiscussionCard> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        margin: EdgeInsets.symmetric(vertical: 4),
+        margin: const EdgeInsets.symmetric(vertical: 4),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
@@ -20,18 +23,18 @@ class _DiscussionCardState extends State<DiscussionCard> {
           ),
         ),
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
           child: Row(
             children: [
               // User Avatar
               Container(
                 height: 54,
                 width: 54,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   shape: BoxShape.circle,
-                  color: const Color(0xCECECECE),
+                  color: Color(0xCECECECE),
                 ),
-                child: Icon(
+                child: const Icon(
                   Icons.person,
                   color: Colors.white,
                   size: 30,
@@ -40,13 +43,13 @@ class _DiscussionCardState extends State<DiscussionCard> {
 
               // Discussion Preview
               Padding(
-                padding: EdgeInsets.only(left: 16),
+                padding: const EdgeInsets.only(left: 16),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Discussion Detail
-                    Row(
+                    const Row(
                       children: [
                         // Discussion Owner Username
                         Text(
@@ -65,14 +68,14 @@ class _DiscussionCardState extends State<DiscussionCard> {
                           children: [
                             Icon(
                               Icons.access_time,
-                              color: const Color(0xFF666666),
+                              color: Color(0xFF666666),
                               size: 12,
                             ),
                             SizedBox(width: 4),
                             Text(
                               '2 days ago',
                               style: TextStyle(
-                                color: const Color(0xFF666666),
+                                color: Color(0xFF666666),
                                 fontSize: 12,
                               ),
                             ),
@@ -84,7 +87,7 @@ class _DiscussionCardState extends State<DiscussionCard> {
                     // Discussion Title
                     Container(
                       width: MediaQuery.of(context).size.width - 210,
-                      child: Text(
+                      child: const Text(
                         'Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet.',
                         style: TextStyle(
                           fontWeight: FontWeight.w600,
@@ -94,18 +97,17 @@ class _DiscussionCardState extends State<DiscussionCard> {
                     ),
 
                     // Additionals
-                    Container(
+                    SizedBox(
                       width: MediaQuery.of(context).size.width - 210,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      child: Wrap(
                         children: [
                           // Last Reply Info
-                          Row(
+                          const Row(
                             children: [
                               // Message Icon
                               Icon(
                                 Icons.message_rounded,
-                                color: const Color(0xFF666666),
+                                color: Color(0xFF666666),
                                 size: 10,
                               ),
 
@@ -116,24 +118,38 @@ class _DiscussionCardState extends State<DiscussionCard> {
                               Text(
                                 'Last reply: by Username',
                                 style: TextStyle(
-                                  color: const Color(0xFF666666),
+                                  color: Color(0xFF666666),
                                   fontSize: 9,
                                 ),
                               ),
                             ],
                           ),
 
-                          TextButton(
-                            onPressed: () {},
-                            child: Text(
-                              'View More >',
-                              style: TextStyle(
-                                color: const Color(0xFF3859D1),
-                                fontWeight: FontWeight.w600,
-                                fontSize: 12,
+                          Container(
+                            height: 15.0,
+                            child: CustomElevatedButton(
+                              width: 120.0,
+                              text: ' ',
+                              leftIcon: const Text(
+                                'View More >',
+                                style: TextStyle(
+                                  color: Color(0xFF527EEE),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 12,
+                                ),
                               ),
+                              buttonStyle: ButtonStyle(
+                                elevation: WidgetStateProperty.all(0),
+                                backgroundColor:
+                                    WidgetStateProperty.all(Colors.transparent),
+                              ),
+                              onPressed: () {
+                                Get.to(
+                                  const Discussion(),
+                                );
+                              },
                             ),
-                          )
+                          ),
                         ],
                       ),
                     )
