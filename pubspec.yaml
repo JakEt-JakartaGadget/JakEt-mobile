@@ -41,6 +41,7 @@ dependencies:
   google_fonts: ^4.0.3
   lottie: ^2.2.0
   carousel_slider: ^4.2.1
+  intl: ^0.17.0
   
   
 
@@ -63,7 +64,9 @@ flutter:
     - assets/
     - assets/images/
     - assets/images/navbar/
-    - assets/images/slider/1.svg
+    - assets/images/slider/1.png
+    - assets/images/slider/2.png
+    - assets/images/slider/3.png
 
   fonts:
     - family: Poppins

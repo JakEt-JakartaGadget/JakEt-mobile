@@ -7,6 +7,7 @@ import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:jaket_mobile/presentation/authentication/register.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:jaket_mobile/auth_controller.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -20,6 +21,7 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _passwordController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
+  final AuthController authController = Get.find<AuthController>();
 
   @override
   Widget build(BuildContext context) {
@@ -259,7 +261,7 @@ class _LoginPageState extends State<LoginPage> {
 
     try {
       final response = await request.login(
-        "http://127.0.0.1:8000//authenticate/login_app/",
+        "http://10.0.2.2:8000//authenticate/login_app/",
         // "http://192.168.1.100:8000/authenticate/login_app/",
         {'username': username, 'password': password},
       );
@@ -268,7 +270,7 @@ class _LoginPageState extends State<LoginPage> {
         if (context.mounted) {
           String message = response['message'] ?? 'Login successful';
           String uname = response['username'] ?? username;
-
+          authController.login();
           Get.off(() => const HomePage());
           ScaffoldMessenger.of(context)
             ..hideCurrentSnackBar()

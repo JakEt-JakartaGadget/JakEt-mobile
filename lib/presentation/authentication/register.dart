@@ -276,7 +276,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
     final request = context.read<CookieRequest>();
     final response = await request.postJson(
-      "http://127.0.0.1:8000/authenticate/register_app/",
+      "http://10.0.2.2:8000/authenticate/register_app/",
       jsonEncode({
         "username": _usernameController.text,
         "password1": _passwordController.text,
