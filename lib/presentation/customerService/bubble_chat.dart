@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:jaket_mobile/presentation/customerService/models.dart';
 
 class BubbleChat extends StatelessWidget {
-  final bool sender;
+  final Chat chat;
 
-  const BubbleChat({super.key, required this.sender});
+  const BubbleChat({super.key, required this.chat});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       alignment: () {
-        if (sender) {
+        if (chat.fields.sentByUser) {
           return Alignment.centerRight;
         } else {
           return Alignment.centerLeft;
@@ -33,9 +34,9 @@ class BubbleChat extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                'Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet.',
+                chat.fields.message,
                 textAlign: () {
-                  if (sender) {
+                  if (chat.fields.sentByUser) {
                     return TextAlign.right;
                   } else {
                     return TextAlign.left;
@@ -46,9 +47,9 @@ class BubbleChat extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 5),
-              const Text(
-                '10:00 AM',
-                style: TextStyle(
+              Text(
+                chat.fields.timeSent,
+                style: const TextStyle(
                   fontSize: 10,
                 ),
               ),
