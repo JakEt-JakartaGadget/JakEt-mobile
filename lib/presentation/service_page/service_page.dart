@@ -1,7 +1,10 @@
+import 'package:jaket_mobile/presentation/service_page/models/tiket_entry.dart';
 import 'package:jaket_mobile/presentation/service_page/booked_tickets.dart';
+import 'package:jaket_mobile/presentation/service_page/schedule_appointment.dart';
 import 'package:jaket_mobile/widgets/service_center_utils.dart';
 import 'package:jaket_mobile/presentation/service_page/servicecenter_detail.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:jaket_mobile/presentation/service_page/models/service_entry.dart';
@@ -17,9 +20,8 @@ class _ServiceCenterPageState extends State<ServiceCenterPage> {
   // Controllers for PageView
   final PageController _pageController = PageController();
 
-  // Future variables to cache data
+  Future<List<Tiket>>? _ticketsFuture;
   Future<List<ServiceCenter>>? _serviceCentersFuture;
-  // Removed _ticketsFuture
 
   // TextEditingController for search
   final TextEditingController _searchController = TextEditingController();
@@ -36,12 +38,12 @@ class _ServiceCenterPageState extends State<ServiceCenterPage> {
   @override
   void initState() {
     super.initState();
-    // Initialize the Futures in initState using a delayed callback to ensure context is available
+    // Initialize the Futures in initState with delayed callback
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final request = context.read<CookieRequest>();
       setState(() {
+        _ticketsFuture = fetchTickets(request);
         _serviceCentersFuture = fetchServiceCenters(request);
-        // Removed _ticketsFuture initialization
       });
     });
   }
@@ -65,6 +67,17 @@ class _ServiceCenterPageState extends State<ServiceCenterPage> {
     return serviceCenters;
   }
 
+  Future<List<Tiket>> fetchTickets(CookieRequest request) async {
+    final response = await request.get('http://10.0.2.2:8000/tiket/json/');
+    List<Tiket> tickets = [];
+    for (var d in response) {
+      if (d != null) {
+        tickets.add(Tiket.fromJson(d));
+      }
+    }
+    return tickets;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -74,10 +87,9 @@ class _ServiceCenterPageState extends State<ServiceCenterPage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // Book Schedule Section with Title inside Grey Container
             Padding(
               padding: const EdgeInsets.all(16.0),
-              child: BookedTicketsSection(),
+              child: BookedTicketsSection(ticketsFuture: _ticketsFuture),
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 8.0),
@@ -92,8 +104,7 @@ class _ServiceCenterPageState extends State<ServiceCenterPage> {
                         prefixIcon: const Icon(Icons.search),
                         filled: true,
                         fillColor: Colors.grey[200],
-                        contentPadding: const EdgeInsets.symmetric(
-                            vertical: 0, horizontal: 16),
+                        contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(16.0),
                           borderSide: BorderSide.none,
@@ -116,20 +127,16 @@ class _ServiceCenterPageState extends State<ServiceCenterPage> {
                           _selectedSortOption = value!;
                         });
                       },
-                      dropdownColor:
-                          const Color.fromARGB(255, 107, 164, 244),
+                      dropdownColor:const Color.fromARGB(255, 107, 164, 244),
                       style: const TextStyle(
                         fontSize: 10.0,
                         color: Colors.black,
                       ),
                       decoration: InputDecoration(
-                        labelStyle: const TextStyle(
-                            color: Colors.black, fontSize: 12.0),
+                        labelStyle: const TextStyle(color: Colors.black, fontSize: 12.0),
                         filled: true,
-                        fillColor:
-                            const Color.fromARGB(255, 107, 164, 244),
-                        contentPadding: const EdgeInsets.symmetric(
-                            vertical: 0, horizontal: 16),
+                        fillColor:const Color.fromARGB(255, 107, 164, 244),
+                        contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(16.0),
                           borderSide: BorderSide.none,
@@ -146,8 +153,7 @@ class _ServiceCenterPageState extends State<ServiceCenterPage> {
               padding: const EdgeInsets.all(16.0),
               child: FutureBuilder<List<ServiceCenter>>(
                 future: _serviceCentersFuture,
-                builder:
-                    (context, AsyncSnapshot<List<ServiceCenter>> snapshot) {
+                builder: (context, AsyncSnapshot<List<ServiceCenter>> snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(
                       child: Padding(
@@ -174,7 +180,7 @@ class _ServiceCenterPageState extends State<ServiceCenterPage> {
                           data: snapshot.data!,
                           query: _searchController.text.toLowerCase(),
                           selectedSortOption: _selectedSortOption,
-                        ); // Use utility function
+                        ); 
                     if (serviceCenters.isEmpty) {
                       return const Padding(
                         padding: EdgeInsets.only(top: 50.0),
@@ -189,8 +195,7 @@ class _ServiceCenterPageState extends State<ServiceCenterPage> {
                         ),
                       );
                     }
-                    final double screenWidth =
-                        MediaQuery.of(context).size.width;
+                    final double screenWidth = MediaQuery.of(context).size.width;
                     final double itemWidth = (screenWidth / 2) - 24;
                     final double itemHeight = itemWidth * 2.25;
 
@@ -199,17 +204,17 @@ class _ServiceCenterPageState extends State<ServiceCenterPage> {
                       runSpacing: 16,
                       children: serviceCenters.map((product) {
                         final serviceCenter = product.fields;
-                        final String imageUrl =
-                            'http://10.0.2.2:8000/media/' + serviceCenter.image;
+                        final String imageUrl = 'http://10.0.2.2:8000/media/' + serviceCenter.image;
                         return GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    ServiceCenterDetailPage(serviceCenter: product),
-                              ),
-                            );
+                          onTap: () async {
+                            bool? didUpdate = await Get.to(() => ServiceCenterDetailPage(serviceCenter: product));
+
+                            if (didUpdate == true) {
+                              setState(() {
+                                final request = context.read<CookieRequest>();
+                                _ticketsFuture = fetchTickets(request);
+                              });
+                            }
                           },
                           child: SizedBox(
                             width: itemWidth,
@@ -245,8 +250,7 @@ class _ServiceCenterPageState extends State<ServiceCenterPage> {
                                   Padding(
                                     padding: const EdgeInsets.all(12.0),
                                     child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text(
                                           serviceCenter.name,
@@ -260,17 +264,16 @@ class _ServiceCenterPageState extends State<ServiceCenterPage> {
                                         const SizedBox(height: 4),
                                         Row(
                                           children: [
-                                            StarRating( // Use the StarRating widget
-                                              rating: double.parse(
-                                                  serviceCenter.rating),
+                                            // Use the StarRating widget
+                                            StarRating( 
+                                              rating: double.parse(serviceCenter.rating),
                                               size: 16.0,
                                               color: Colors.amber,
                                             ),
                                             const SizedBox(width: 4),
                                             Text(
                                               '${serviceCenter.rating} (${serviceCenter.totalReviews})',
-                                              style:
-                                                  const TextStyle(fontSize: 12.0),
+                                              style: const TextStyle(fontSize: 12.0),
                                             ),
                                           ],
                                         ),
@@ -286,8 +289,7 @@ class _ServiceCenterPageState extends State<ServiceCenterPage> {
                                           serviceCenter.address,
                                           maxLines: 2,
                                           overflow: TextOverflow.ellipsis,
-                                          style: const TextStyle(
-                                              fontSize: 14.0),
+                                          style: const TextStyle(fontSize: 14.0),
                                         ),
                                         const SizedBox(height: 4),
                                         const Text(
@@ -301,8 +303,7 @@ class _ServiceCenterPageState extends State<ServiceCenterPage> {
                                           serviceCenter.contact,
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
-                                          style: const TextStyle(
-                                              fontSize: 14.0),
+                                          style: const TextStyle(fontSize: 14.0),
                                         ),
                                       ],
                                     ),
@@ -316,16 +317,20 @@ class _ServiceCenterPageState extends State<ServiceCenterPage> {
                                     child: SizedBox(
                                       height: 35,
                                       child: ElevatedButton(
-                                        onPressed: () {
-                                          // Handle scheduling logic
+                                        onPressed: () async {
+                                          bool? didSubmit = await Get.to(() => TicketFormPage(serviceCenter: product));
+                                          
+                                          if (didSubmit == true) {
+                                            setState(() {
+                                              final request = context.read<CookieRequest>();
+                                              _ticketsFuture = fetchTickets(request);
+                                            });
+                                          }
                                         },
                                         style: ElevatedButton.styleFrom(
-                                          backgroundColor:
-                                              const Color.fromARGB(
-                                                  255, 4, 93, 236),
+                                          backgroundColor: const Color.fromARGB(255, 4, 93, 236),
                                           shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(20.0),
+                                            borderRadius: BorderRadius.circular(20.0),
                                           ),
                                         ),
                                         child: const Text(
