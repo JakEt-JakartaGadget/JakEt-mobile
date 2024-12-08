@@ -1,13 +1,17 @@
-// lib/widgets/booked_tickets_section.dart
+import 'dart:convert';
 
+import 'package:jaket_mobile/presentation/service_page/reschedule_appointment.dart';
 import 'package:flutter/material.dart';
 import 'package:jaket_mobile/presentation/service_page/models/tiket_entry.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:jaket_mobile/widgets/dots_indicator.dart';
 
 class BookedTicketsSection extends StatefulWidget {
-  const BookedTicketsSection({Key? key}) : super(key: key);
+  final Future<List<Tiket>>? ticketsFuture;
+
+  const BookedTicketsSection({Key? key, required this.ticketsFuture}) : super(key: key);
 
   @override
   _BookedTicketsSectionState createState() => _BookedTicketsSectionState();
@@ -17,15 +21,14 @@ class _BookedTicketsSectionState extends State<BookedTicketsSection> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
 
-  // State variable to hold the Future
-  late Future<List<Tiket>> _ticketsFuture;
+  // Use state variable to hold Future
+  late Future<List<Tiket>>? _ticketsFuture;
 
   @override
   void initState() {
     super.initState();
-    // Initialize the Future in initState
     final request = context.read<CookieRequest>();
-    _ticketsFuture = fetchTickets(request);
+    _ticketsFuture = widget.ticketsFuture ?? fetchTickets(request);
   }
 
   // Fetch tickets
@@ -44,6 +47,16 @@ class _BookedTicketsSectionState extends State<BookedTicketsSection> {
   void dispose() {
     _pageController.dispose();
     super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(covariant BookedTicketsSection oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.ticketsFuture != oldWidget.ticketsFuture) {
+      setState(() {
+        _ticketsFuture = widget.ticketsFuture;
+      });
+    }
   }
 
   Widget buildTicketCard(Tiket ticket) {
@@ -78,54 +91,28 @@ class _BookedTicketsSectionState extends State<BookedTicketsSection> {
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white, 
+                        color: Colors.white,
                       ),
                     ),
                     const SizedBox(height: 8),
-                    Divider(color: Colors.white, thickness: 1), 
+                    Divider(color: Colors.white, thickness: 1),
                     const SizedBox(height: 8),
                     // Date and Time Row
                     Row(
                       children: [
-                        // Date
                         Expanded(
                           child: Row(
                             children: [
                               const Icon(
                                 Icons.calendar_today,
                                 size: 20,
-                                color: Colors.white, 
+                                color: Colors.white,
                                 semanticLabel: 'Service Date',
                               ),
                               const SizedBox(width: 8),
                               Expanded(
                                 child: Text(
-                                  '${ticket.serviceDate.toLocal().toIso8601String().split('T')[0]}',
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white, 
-                                  ),
-                                  softWrap: true,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        // Time
-                        Expanded(
-                          child: Row(
-                            children: [
-                              const Icon(
-                                Icons.access_time,
-                                size: 20,
-                                color: Colors.white, 
-                                semanticLabel: 'Service Time',
-                              ),
-                              const SizedBox(width: 8),
-                              Expanded(
-                                child: Text(
-                                  '${ticket.serviceTime}',
+                                  formatCustomDate(ticket.serviceDate),
                                   style: const TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.bold,
@@ -136,6 +123,70 @@ class _BookedTicketsSectionState extends State<BookedTicketsSection> {
                               ),
                             ],
                           ),
+                        ),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min, 
+                            children: [
+                              const Icon(
+                                Icons.access_time,
+                                size: 20,
+                                color: Colors.white,
+                                semanticLabel: 'Service Time',
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                formatTime(ticket.serviceTime),
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                                softWrap: true,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            const Icon(
+                              Icons.timelapse,
+                              size: 20,
+                              color: Colors.white,
+                            ),
+                            const SizedBox(width: 8),
+                            const Text(
+                              'Time Until Appointment:',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            const SizedBox(width: 28),
+                            Expanded(
+                              child: Text(
+                                calculateTimeLeft(ticket.serviceDate, ticket.serviceTime),
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                                softWrap: true,
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -149,7 +200,7 @@ class _BookedTicketsSectionState extends State<BookedTicketsSection> {
                         const Icon(
                           Icons.location_on,
                           size: 20,
-                          color: Colors.white, 
+                          color: Colors.white,
                           semanticLabel: 'Location Icon',
                         ),
                         const SizedBox(width: 8),
@@ -162,7 +213,7 @@ class _BookedTicketsSectionState extends State<BookedTicketsSection> {
                                 style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.white, 
+                                  color: Colors.white,
                                 ),
                               ),
                               Text(
@@ -170,7 +221,7 @@ class _BookedTicketsSectionState extends State<BookedTicketsSection> {
                                 style: const TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.white, 
+                                  color: Colors.white,
                                 ),
                                 softWrap: true,
                               ),
@@ -187,7 +238,7 @@ class _BookedTicketsSectionState extends State<BookedTicketsSection> {
                         const Icon(
                           Icons.contact_phone,
                           size: 20,
-                          color: Colors.white, 
+                          color: Colors.white,
                           semanticLabel: 'Contact Icon',
                         ),
                         const SizedBox(width: 8),
@@ -200,7 +251,7 @@ class _BookedTicketsSectionState extends State<BookedTicketsSection> {
                                 style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.white, 
+                                  color: Colors.white,
                                 ),
                               ),
                               Text(
@@ -208,7 +259,7 @@ class _BookedTicketsSectionState extends State<BookedTicketsSection> {
                                 style: const TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.white, 
+                                  color: Colors.white,
                                 ),
                                 softWrap: true,
                               ),
@@ -218,15 +269,15 @@ class _BookedTicketsSectionState extends State<BookedTicketsSection> {
                       ],
                     ),
                     const SizedBox(height: 8),
-                    Divider(color: Colors.white, thickness: 1), 
+                    Divider(color: Colors.white, thickness: 1),
                     const SizedBox(height: 8),
                     // Specific Problems
                     const Text(
-                      'Specific Problems',
+                      'Specific Problems:',
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white, 
+                        color: Colors.white,
                       ),
                     ),
                     Text(
@@ -234,7 +285,7 @@ class _BookedTicketsSectionState extends State<BookedTicketsSection> {
                       style: const TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white, 
+                        color: Colors.white,
                       ),
                       softWrap: true,
                     ),
@@ -243,63 +294,116 @@ class _BookedTicketsSectionState extends State<BookedTicketsSection> {
               ),
               // Buttons Section
               Row(
-                mainAxisAlignment: MainAxisAlignment.center, 
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // Cancel Button
                   ElevatedButton.icon(
-                    onPressed: () {
-                      // Placeholder for Cancel action
-                      // Implement cancel functionality here
+                    onPressed: () async {
+                      bool? confirm = await showDialog<bool>(
+                        context: context,
+                        builder: (BuildContext dialogContext) {
+                          return AlertDialog(
+                            title: const Text('Confirm Cancellation'),
+                            content: const Text('Are you sure you want to cancel this appointment?'),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () {
+                                  Get.back(result: true);
+                                },
+                                child: const Text('No'),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  Get.back(result: true);
+                                },
+                                child: const Text('Yes'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+
+                      if (confirm == true) {
+                        // User confirmed cancellation
+                        final request = context.read<CookieRequest>();
+                        final response = await request.postJson(
+                          "http://10.0.2.2:8000/tiket/cancel-appointment-flutter/",
+                          jsonEncode(<String, dynamic>{
+                            'ticket_id': ticket.id.toString(),
+                          }),
+                        );
+
+                        if (context.mounted) {
+                          if (response['status'] == 'success') {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text("Appointment cancelled successfully!"),
+                              ),
+                            );
+                            // Refresh the tickets after successful cancellation
+                            setState(() {
+                              _ticketsFuture = fetchTickets(request);
+                            });
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  response['message'] ?? "An error occurred. Please try again.",
+                                ),
+                              ),
+                            );
+                          }
+                        }
+                      }
                     },
                     icon: const Icon(
                       Icons.cancel,
-                      size: 16, 
-                      color: Colors.white, 
+                      size: 16,
+                      color: Colors.white,
                     ),
                     label: const Text(
                       'Cancel',
                       style: TextStyle(
-                        fontSize: 14, 
-                        fontWeight: FontWeight.bold, 
-                        color: Colors.white, 
-                      ),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red, 
-                      foregroundColor: Colors.white, 
-                      shape: const StadiumBorder(), 
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 8), 
-                      minimumSize: const Size(0, 0), 
-                    ),
-                  ),
-                  const SizedBox(width: 8), 
-                  // Reschedule Button
-                  ElevatedButton.icon(
-                    onPressed: () {
-                      // Placeholder for Reschedule action
-                      // Implement reschedule functionality here
-                    },
-                    icon: const Icon(
-                      Icons.my_library_books_rounded,
-                      size: 16, 
-                      color: Colors.white, 
-                    ),
-                    label: const Text(
-                      'Reschedule',
-                      style: TextStyle(
-                        fontSize: 14, 
-                        fontWeight: FontWeight.bold, 
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
                     ),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue, 
-                      foregroundColor: Colors.white, 
-                      shape: const StadiumBorder(), 
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 8),
-                      minimumSize: const Size(0, 0), 
+                      backgroundColor: Colors.red,
+                      foregroundColor: Colors.white,
+                      shape: const StadiumBorder(),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  ElevatedButton.icon(
+                    onPressed: () async {
+                      bool? didReschedule = await Get.to(() => RescheduleTicketPage(ticket: ticket));
+
+                      if (didReschedule == true) {
+                        // Refresh tickets after successful reschedule
+                        final request = context.read<CookieRequest>();
+                        setState(() {
+                          _ticketsFuture = fetchTickets(request);
+                        });
+                      }
+                    },
+                    icon: const Icon(
+                      Icons.my_library_books_rounded,
+                      size: 16,
+                      color: Colors.white,
+                    ),
+                    label: const Text(
+                      'Reschedule',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      foregroundColor: Colors.white,
+                      shape: const StadiumBorder(),
                     ),
                   ),
                 ],
@@ -313,7 +417,6 @@ class _BookedTicketsSectionState extends State<BookedTicketsSection> {
 
   @override
   Widget build(BuildContext context) {
-    // Fetch the screen height
     double screenHeight = MediaQuery.of(context).size.height;
 
     return Container(
@@ -327,28 +430,19 @@ class _BookedTicketsSectionState extends State<BookedTicketsSection> {
         future: _ticketsFuture,
         builder: (context, AsyncSnapshot<List<Tiket>> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const SizedBox(
-              height: 150,
-              child: Center(child: CircularProgressIndicator()),
-            );
+            return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            return const SizedBox(
-              height: 150,
-              child: Center(
-                child: Text(
-                  'Failed to load booked tickets.',
-                  style: TextStyle(fontSize: 16, color: Colors.red),
-                ),
+            return const Center(
+              child: Text(
+                'Failed to load booked tickets.',
+                style: TextStyle(fontSize: 16, color: Colors.red),
               ),
             );
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const SizedBox(
-              height: 150,
-              child: Center(
-                child: Text(
-                  'No booked tickets available.',
-                  style: TextStyle(fontSize: 16),
-                ),
+            return const Center(
+              child: Text(
+                'No booked tickets available.',
+                style: TextStyle(fontSize: 16),
               ),
             );
           } else {
@@ -360,12 +454,12 @@ class _BookedTicketsSectionState extends State<BookedTicketsSection> {
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: Colors.black, 
+                    color: Colors.black,
                   ),
                 ),
                 const SizedBox(height: 10),
                 SizedBox(
-                  height: screenHeight * 0.55, 
+                  height: screenHeight * 0.62,
                   child: PageView.builder(
                     controller: _pageController,
                     itemCount: snapshot.data!.length,
@@ -375,13 +469,11 @@ class _BookedTicketsSectionState extends State<BookedTicketsSection> {
                       });
                     },
                     itemBuilder: (context, index) {
-                      var ticket = snapshot.data![index];
-                      return buildTicketCard(ticket);
+                      return buildTicketCard(snapshot.data![index]);
                     },
                   ),
                 ),
                 const SizedBox(height: 10),
-                // Dots Indicator
                 DotsIndicator(
                   currentPage: _currentPage,
                   itemCount: snapshot.data!.length,
@@ -393,4 +485,50 @@ class _BookedTicketsSectionState extends State<BookedTicketsSection> {
       ),
     );
   }
+}
+
+// Methods for formatting
+String formatCustomDate(DateTime date) {
+  String twoDigits(int n) => n.toString().padLeft(2, '0');
+  String day = twoDigits(date.day);
+  String month = twoDigits(date.month);
+  String year = date.year.toString();
+  return '$day/$month/$year';
+}
+
+String formatTime(String time) {
+  List<String> parts = time.split(':');
+  if (parts.length >= 2) {
+    // Just take HH:MM
+    return '${parts[0]}:${parts[1]}';
+  }
+  return time; 
+}
+
+String calculateTimeLeft(DateTime serviceDate, String serviceTime) {
+  List<String> timeParts = serviceTime.split(':');
+  int hour = int.parse(timeParts[0]);
+  int minute = int.parse(timeParts[1]);
+
+  DateTime appointmentDateTime = DateTime(
+    serviceDate.year,
+    serviceDate.month,
+    serviceDate.day,
+    hour,
+    minute,
+  );
+
+  DateTime currentTime = DateTime.now();
+
+  Duration diff = appointmentDateTime.difference(currentTime);
+
+  if (diff.isNegative) {
+    return 'Appointment has passed';
+  }
+
+  int daysLeft = diff.inDays;
+  int hoursLeft = diff.inHours % 24;
+  int minutesLeft = diff.inMinutes % 60;
+
+  return '$daysLeft days, $hoursLeft hours, and $minutesLeft minutes';
 }
