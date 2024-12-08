@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:jaket_mobile/presentation/customerService/customer_service.dart';
 
 class ChoiceRow extends StatefulWidget {
   const ChoiceRow({super.key});
@@ -20,6 +22,7 @@ class _ChoiceRowState extends State<ChoiceRow> {
             label: "Support",
             onTap: () {
               print("Support tapped");
+              Get.to(const CustomerServiceChat());
             },
           ),
           const SizedBox(width: 20.0),
@@ -62,15 +65,15 @@ class _ChoiceRowState extends State<ChoiceRow> {
               boxShadow: [
                 BoxShadow(
                   color: Colors.grey.withOpacity(0.5),
-                  spreadRadius: 1, 
-                  blurRadius: 4, 
-                  offset: const Offset(0, 2), 
+                  spreadRadius: 1,
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
                 ),
               ],
             ),
             child: Icon(
               icon,
-              color: const Color(0xFF6D0CC9), 
+              color: const Color(0xFF6D0CC9),
               size: 24.0,
             ),
           ),

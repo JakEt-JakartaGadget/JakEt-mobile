@@ -48,7 +48,15 @@ class BubbleChat extends StatelessWidget {
               ),
               const SizedBox(height: 5),
               Text(
-                chat.fields.timeSent,
+                DateTime.parse("1970-01-01T" + chat.fields.timeSent)
+                        .hour
+                        .toString()
+                        .padLeft(2, '0') +
+                    ':' +
+                    DateTime.parse("1970-01-01T" + chat.fields.timeSent)
+                        .minute
+                        .toString()
+                        .padLeft(2, '0'),
                 style: const TextStyle(
                   fontSize: 10,
                 ),

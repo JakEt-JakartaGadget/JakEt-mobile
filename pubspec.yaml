@@ -68,9 +68,9 @@ flutter:
   fonts:
     - family: Poppins
       fonts:
-        - asset: assets/font/PoppinsSemiBold.ttf
+        - asset: assets/fonts/PoppinsSemiBold.ttf
           weight: 600
-        - asset: assets/font/PoppinsRegular.ttf
+        - asset: assets/fonts/PoppinsRegular.ttf
           weight: 400
-        - asset: assets/font/PoppinsMedium.ttf
+        - asset: assets/fonts/PoppinsMedium.ttf
           weight: 500

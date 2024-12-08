@@ -14,7 +14,7 @@ class CustomerServiceChat extends StatefulWidget {
 }
 
 class _CustomerServiceChatState extends State<CustomerServiceChat> {
-  Future<List<Chat>> getChats(CookieRequest request) async {
+  Future<Map<DateTime, List<Chat>>> getChats(CookieRequest request) async {
     // Fetch data from the server
     final response =
         await request.get('http://127.0.0.1:8000/customer-service/json/');
@@ -42,7 +42,7 @@ class _CustomerServiceChatState extends State<CustomerServiceChat> {
       groupedChats[chatDate]?.add(chat);
     }
 
-    return chats;
+    return groupedChats;
   }
 
   @override
@@ -89,13 +89,53 @@ class _CustomerServiceChatState extends State<CustomerServiceChat> {
                       horizontal: 30.0, vertical: 10.0),
                   child: Column(
                     children: [
+                      // Expanded(
+                      //   child: ListView.builder(
+                      //     physics: const BouncingScrollPhysics(),
+                      //     itemCount: snapshot.data!.length,
+                      //     itemBuilder: (context, index) {
+                      //       return BubbleChat(
+                      //         chat: snapshot.data![index],
+                      //       );
+                      //     },
+                      //   ),
+                      // ),
+
                       Expanded(
                         child: ListView.builder(
                           physics: const BouncingScrollPhysics(),
                           itemCount: snapshot.data!.length,
                           itemBuilder: (context, index) {
-                            return BubbleChat(
-                              chat: snapshot.data![index],
+                            return Container(
+                              child: Column(
+                                children: [
+                                  // Date
+                                  Container(
+                                    margin: const EdgeInsets.symmetric(
+                                        vertical: 10.0),
+                                    child: Text(
+                                      '${snapshot.data!.keys.elementAt(index).day.toString().padLeft(2, '0')}/'
+                                      '${snapshot.data!.keys.elementAt(index).month.toString().padLeft(2, '0')}/'
+                                      '${snapshot.data!.keys.elementAt(index).year}',
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        color: Color(0xFF527EEE),
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: 'Poppins',
+                                      ),
+                                    ),
+                                  ),
+
+                                  // Chat
+                                  Column(
+                                    children: snapshot.data!.values
+                                        .elementAt(index)
+                                        .map<Widget>((chat) {
+                                      return BubbleChat(chat: chat);
+                                    }).toList(),
+                                  ),
+                                ],
+                              ),
                             );
                           },
                         ),

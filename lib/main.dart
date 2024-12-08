@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
+import 'package:jaket_mobile/presentation/authentication/login.dart';
+import 'package:jaket_mobile/presentation/customerService/customer_service.dart';
 import 'package:jaket_mobile/presentation/homepage/homepage.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
@@ -23,7 +25,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           useMaterial3: true,
         ),
-        home: const HomePage(),
+        home: const CustomerServiceChat(),
         debugShowCheckedModeBanner: false,
       ),
     );
