@@ -1,11 +1,13 @@
-import 'package:flutter/material.dart';
 import 'package:jaket_mobile/presentation/service_page/models/service_entry.dart';
+import 'package:jaket_mobile/presentation/service_page/schedule_appointment.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class ServiceCenterDetailPage extends StatelessWidget {
   final ServiceCenter serviceCenter;
 
   const ServiceCenterDetailPage({Key? key, required this.serviceCenter}) : super(key: key);
-
+  
   // Method to render stars
   Widget renderStars(double rating) {
     int fullStars = rating.floor();
@@ -118,7 +120,7 @@ class ServiceCenterDetailPage extends StatelessWidget {
                   children: [
                     ElevatedButton.icon(
                       onPressed: () {
-                        Navigator.pop(context);
+                        Get.back(result: true);
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.redAccent,
@@ -135,8 +137,16 @@ class ServiceCenterDetailPage extends StatelessWidget {
                       ),
                     ),
                     ElevatedButton.icon(
-                      onPressed: () {
-                        // Add logic to schedule an appointment
+                      onPressed: () async {
+                        bool? didSubmit = await Get.to(() => TicketFormPage(serviceCenter: serviceCenter));
+
+                        if (didSubmit == true) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Appointment scheduled successfully!"),
+                            ),
+                          );
+                        }
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color.fromARGB(255, 4, 93, 236),
