@@ -307,7 +307,7 @@ class _BookedTicketsSectionState extends State<BookedTicketsSection> {
                             actions: <Widget>[
                               TextButton(
                                 onPressed: () {
-                                  Get.back(result: true);
+                                  Get.back(result: false);
                                 },
                                 child: const Text('No'),
                               ),
