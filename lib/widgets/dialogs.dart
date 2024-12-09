@@ -12,14 +12,13 @@ class ConfirmationDialog extends StatefulWidget {
   final Function? onCancel;
 
   const ConfirmationDialog(
-      {Key? key,
+      {super.key,
         this.title,
         this.content,
         this.textConfirm = "Ya",
         this.textCancel = "Batal",
         this.onConfirm,
-        this.onCancel})
-      : super(key: key);
+        this.onCancel});
 
   @override
   _ConfirmationDialogState createState() => _ConfirmationDialogState();
@@ -37,7 +36,7 @@ class _ConfirmationDialogState extends State<ConfirmationDialog> {
 
   dialogContent(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(25),
+      padding: const EdgeInsets.all(25),
       decoration: BoxDecoration(
           color: Colors.white, borderRadius: BorderRadius.circular(8)),
       child: Column(
@@ -47,16 +46,16 @@ class _ConfirmationDialogState extends State<ConfirmationDialog> {
         children: <Widget>[
           Text(
             widget.title!,
-            style: TextStyle(fontSize: 19, fontWeight: FontWeight.w500),
+            style: const TextStyle(fontSize: 19, fontWeight: FontWeight.w500),
           ),
-          SizedBox(
+          const SizedBox(
             height: 24,
           ),
           widget.content != ""
-              ? Text(widget.content!, style: TextStyle(fontSize: 15))
+              ? Text(widget.content!, style: const TextStyle(fontSize: 15))
               : Container(),
           widget.content != ""
-              ? SizedBox(
+              ? const SizedBox(
             height: 24,
           )
               : Container(),

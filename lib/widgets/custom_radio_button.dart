@@ -1,9 +1,11 @@
+// ignore_for_file: sort_child_properties_last
+
 import 'package:flutter/material.dart';
 // import '../core/app_export.dart'; // ignore_for_file: must_be_immutable
 
 class CustomRadioButton extends StatelessWidget {
   CustomRadioButton(
-      {Key? key,
+      {super.key,
       required this.onChange,
       this.decoration,
       this.alignment,
@@ -17,10 +19,7 @@ class CustomRadioButton extends StatelessWidget {
       this.textStyle,
       this.textAlignment,
       this.gradient,
-      this.backgroundColor})
-      : super(
-          key: key,
-        );
+      this.backgroundColor});
 
   final BoxDecoration? decoration;
 
@@ -86,7 +85,7 @@ class CustomRadioButton extends StatelessWidget {
         children: [
           Padding(
             child: radioButtonWidget,
-            padding: EdgeInsets.only(right: 8),
+            padding: const EdgeInsets.only(right: 8),
           ),
           textWidget
         ],
@@ -96,7 +95,7 @@ class CustomRadioButton extends StatelessWidget {
         children: [
           textWidget,
           Padding(
-            padding: EdgeInsets.only(left: 8),
+            padding: const EdgeInsets.only(left: 8),
             child: radioButtonWidget,
           )
         ],
@@ -110,7 +109,7 @@ class CustomRadioButton extends StatelessWidget {
         height: iconSize,
         width: iconSize,
         child: Radio<String>(
-          visualDensity: VisualDensity(
+          visualDensity: const VisualDensity(
             vertical: -4,
             horizontal: -4,
           ),

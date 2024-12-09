@@ -1,8 +1,8 @@
-// lib/main.dart
-
 import 'package:flutter/material.dart';
-import 'routes/app_routes.dart';
-import 'package:jaket_mobile/presentation/homepage/comparison.dart';
+import 'package:get/get_navigation/src/root/get_material_app.dart';
+import 'package:jaket_mobile/presentation/homepage/homepage.dart';
+import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   runApp(const MyApp());
@@ -11,17 +11,21 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // Widget ini adalah root dari aplikasi Anda.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Comparison App',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+    return Provider(
+      create: (_) {
+        CookieRequest request = CookieRequest();
+        return request;
+      },
+      child: GetMaterialApp(
+        title: 'JakEt',
+        theme: ThemeData(
+          useMaterial3: true,
+        ),
+        home: const HomePage(),
+        debugShowCheckedModeBanner: false,
       ),
-      home: const ComparisonPage(),
-      // Tambahkan routes jika diperlukan
     );
   }
 }
