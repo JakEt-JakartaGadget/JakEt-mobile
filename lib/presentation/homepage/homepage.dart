@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:jaket_mobile/presentation/homepage/choice_row.dart';
+import 'package:jaket_mobile/presentation/profile/profile.dart';
 import 'package:jaket_mobile/widgets/custom_button_nav_bar.dart';
 import 'package:jaket_mobile/widgets/custom_slider.dart';
 
@@ -64,7 +65,10 @@ class _HomePageState extends State<HomePage> {
               ),
               child: GestureDetector(
                 onTap: () {
-                  _onItemTapped(4);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ProfilePage()), // Arahkan ke halaman ProfilePage
+                  );
                 },
                 child: const Padding(
                   padding: EdgeInsets.all(3.0),
