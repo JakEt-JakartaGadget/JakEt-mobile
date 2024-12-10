@@ -1,10 +1,10 @@
+import 'dart:convert'; // for jsonDecode
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 import 'package:jaket_mobile/presentation/homepage/homepage.dart';
-import 'package:jaket_mobile/widgets/custom_image_view.dart';
 import '../../models/device.dart';
+import 'package:url_launcher/url_launcher.dart'; // Untuk membuka URL
 
 class ComparisonPage extends StatefulWidget {
   const ComparisonPage({Key? key}) : super(key: key);
@@ -15,57 +15,60 @@ class ComparisonPage extends StatefulWidget {
 
 class _ComparisonPageState extends State<ComparisonPage> {
   List<Comparison> devices = [];
-  String? selectedModel1;
-  String? selectedModel2;
+  String? selectedModel1; 
+  String? selectedModel2; 
   Comparison? device1;
   Comparison? device2;
   bool isLoading = false;
+  bool isDevicesLoading = true;
 
   @override
   void initState() {
     super.initState();
     fetchDevices().then((fetchedDevices) {
       setState(() {
-        devices = fetchedDevices;
+        devices = fetchedDevices.take(100).toList();
+        isDevicesLoading = false;
       });
     });
   }
 
   Future<List<Comparison>> fetchDevices() async {
-    final response = await http.get(Uri.parse('http://127.0.0.1:8000/comparison/devices/'));
+    final response = await http.get(Uri.parse('http://10.0.2.2:8000/comparison/devices/'));
 
     if (response.statusCode == 200) {
-      List<dynamic> deviceJson = json.decode(response.body);
+      final List<dynamic> jsonData = jsonDecode(response.body);
       List<Comparison> fetchedDevices = [];
-      for (var d in deviceJson) {
-        if (d != null) {
-          fetchedDevices.add(Comparison.fromJson(d));
-        }
+      for (var d in jsonData) {
+        fetchedDevices.add(Comparison.fromJson(d));
       }
       return fetchedDevices;
     } else {
-      throw Exception('Gagal memuat perangkat');
+      throw Exception('Failed to load devices');
     }
   }
 
   Future<void> compareDevices() async {
     if (selectedModel1 == null || selectedModel2 == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Silakan pilih kedua perangkat untuk dibandingkan.')),
+        const SnackBar(content: Text('Silakan pilih kedua perangkat untuk dibandingkan.')),
       );
       return;
     }
+
+    final deviceSelected1 = devices.firstWhere((d) => d.productName == selectedModel1);
+    final deviceSelected2 = devices.firstWhere((d) => d.productName == selectedModel2);
 
     setState(() {
       isLoading = true;
     });
 
     final response = await http.post(
-      Uri.parse('http://127.0.0.1:8000/comparison/compare/'),
+      Uri.parse('http://10.0.2.2:8000/comparison/compare/'),
       headers: {'Content-Type': 'application/json'},
       body: json.encode({
-        'model1': selectedModel1,
-        'model2': selectedModel2,
+        'model1': deviceSelected1.model,
+        'model2': deviceSelected2.model,
       }),
     );
 
@@ -81,7 +84,7 @@ class _ComparisonPageState extends State<ComparisonPage> {
       });
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Gagal membandingkan perangkat')),
+        const SnackBar(content: Text('Gagal membandingkan perangkat')),
       );
     }
   }
@@ -104,7 +107,7 @@ class _ComparisonPageState extends State<ComparisonPage> {
         leading: GestureDetector(
           onTap: () => Get.off(() => const HomePage()),
           child: CircleAvatar(
-            backgroundColor: Color(0xFF6D0CC9),
+            backgroundColor: const Color(0xFF6D0CC9),
             child: Icon(
               Icons.arrow_back,
               color: Colors.white,
@@ -138,166 +141,141 @@ class _ComparisonPageState extends State<ComparisonPage> {
               textAlign: TextAlign.center,
             ),
             SizedBox(height: padding),
-            // Dropdown pertama
-            DropdownButtonFormField<String>(
-              decoration: InputDecoration(
-                labelText: 'Choose a device',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(28.0),
-                ),
-                contentPadding: EdgeInsets.symmetric(horizontal: isSmallScreen ? 8 : 16.0),
-              ),
-              value: selectedModel1,
-              items: devices.map((Comparison device) {
-                return DropdownMenuItem<String>(
-                  value: device.model,
-                  child: Row(
-                    children: [
-                      CustomImageView(
-                        imagePath: device.pictureUrl,
-                        height: isSmallScreen ? 30 : 40,
-                        width: isSmallScreen ? 30 : 40,
-                        fit: BoxFit.cover,
-                      ),
-                      SizedBox(width: 10),
-                      Flexible(
-                        child: Text(
-                          device.productName,
-                          style: TextStyle(
-                            fontSize: isSmallScreen ? 12 : 16,
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ],
+
+            if (isDevicesLoading)
+              const Center(child: CircularProgressIndicator())
+            else ...[
+              DropdownButtonFormField<String>(
+                decoration: InputDecoration(
+                  labelText: 'Choose a device',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(28.0),
                   ),
-                );
-              }).toList(),
-              onChanged: (String? newValue) {
-                setState(() {
-                  selectedModel1 = newValue;
-                });
-              },
-            ),
-            SizedBox(height: padding),
-            Text(
-              "VS",
-              style: TextStyle(
-                fontSize: isSmallScreen ? 36 : 48,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF6D0CC9),
-              ),
-            ),
-            SizedBox(height: padding),
-            // Dropdown kedua
-            DropdownButtonFormField<String>(
-              decoration: InputDecoration(
-                labelText: 'Choose a device',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(28.0),
+                  contentPadding: EdgeInsets.symmetric(horizontal: isSmallScreen ? 8 : 16.0),
                 ),
-                contentPadding: EdgeInsets.symmetric(horizontal: isSmallScreen ? 8 : 16.0),
-              ),
-              value: selectedModel2,
-              items: devices.map((Comparison device) {
-                return DropdownMenuItem<String>(
-                  value: device.model,
-                  child: Row(
-                    children: [
-                      CustomImageView(
-                        imagePath: device.pictureUrl,
-                        height: isSmallScreen ? 30 : 40,
-                        width: isSmallScreen ? 30 : 40,
-                        fit: BoxFit.cover,
+                value: selectedModel1,
+                items: devices.map((Comparison device) {
+                  return DropdownMenuItem<String>(
+                    value: device.productName,
+                    child: Text(
+                      device.productName,
+                      style: TextStyle(
+                        fontSize: isSmallScreen ? 12 : 16,
                       ),
-                      SizedBox(width: 10),
-                      Flexible(
-                        child: Text(
-                          device.productName,
-                          style: TextStyle(
-                            fontSize: isSmallScreen ? 12 : 16,
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              }).toList(),
-              onChanged: (String? newValue) {
-                setState(() {
-                  selectedModel2 = newValue;
-                });
-              },
-            ),
-            SizedBox(height: padding),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.transparent,
-                shadowColor: Colors.transparent,
-                elevation: 0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(28.0),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  );
+                }).toList(),
+                onChanged: (String? newValue) {
+                  setState(() {
+                    selectedModel1 = newValue;
+                  });
+                },
+              ),
+              SizedBox(height: padding),
+              Text(
+                "VS",
+                style: TextStyle(
+                  fontSize: isSmallScreen ? 36 : 48,
+                  fontWeight: FontWeight.bold,
+                  color: const Color(0xFF6D0CC9),
                 ),
               ),
-              onPressed: compareDevices,
-              child: Container(
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      Color(0xFF527EEE),
-                      Color(0xFF766DEE),
-                      Color(0xFF985CEF),
-                    ],
-                    begin: Alignment.centerLeft,
-                    end: Alignment.centerRight,
+              SizedBox(height: padding),
+              DropdownButtonFormField<String>(
+                decoration: InputDecoration(
+                  labelText: 'Choose a device',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(28.0),
                   ),
-                  borderRadius: BorderRadius.circular(28.0),
+                  contentPadding: EdgeInsets.symmetric(horizontal: isSmallScreen ? 8 : 16.0),
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 15.0),
-                  child: Text(
-                    'Compare',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: fontSizeButton,
+                value: selectedModel2,
+                items: devices.map((Comparison device) {
+                  return DropdownMenuItem<String>(
+                    value: device.productName,
+                    child: Text(
+                      device.productName,
+                      style: TextStyle(
+                        fontSize: isSmallScreen ? 12 : 16,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  );
+                }).toList(),
+                onChanged: (String? newValue) {
+                  setState(() {
+                    selectedModel2 = newValue;
+                  });
+                },
+              ),
+              SizedBox(height: padding),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.transparent,
+                  shadowColor: Colors.transparent,
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(28.0),
+                  ),
+                ),
+                onPressed: compareDevices,
+                child: Container(
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [
+                        Color(0xFF527EEE),
+                        Color(0xFF766DEE),
+                        Color(0xFF985CEF),
+                      ],
+                      begin: Alignment.centerLeft,
+                      end: Alignment.centerRight,
+                    ),
+                    borderRadius: BorderRadius.circular(28.0),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 15.0),
+                    child: Text(
+                      'Compare',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: fontSizeButton,
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-            SizedBox(height: padding * 2),
-            if (isLoading)
-              CircularProgressIndicator(),
-            if (device1 != null && device2 != null)
-              LayoutBuilder(
-                builder: (context, constraints) {
-                  if (constraints.maxWidth > 800) {
-                    return Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(child: buildDeviceCard(device1!, fontSizeCard, isSmallScreen)),
-                        Container(
-                          height: 300,
-                          width: 2,
-                          color: Colors.grey[400],
-                        ),
-                        Expanded(child: buildDeviceCard(device2!, fontSizeCard, isSmallScreen)),
-                      ],
-                    );
-                  } else {
-                    return Column(
-                      children: [
-                        buildDeviceCard(device1!, fontSizeCard, isSmallScreen),
-                        SizedBox(height: padding),
-                        buildDeviceCard(device2!, fontSizeCard, isSmallScreen),
-                      ],
-                    );
-                  }
-                },
-              ),
+              SizedBox(height: padding * 2),
+              if (isLoading) const CircularProgressIndicator(),
+              if (device1 != null && device2 != null)
+                LayoutBuilder(
+                  builder: (context, constraints) {
+                    // Dihapus garis pemisah antar card
+                    if (constraints.maxWidth > 800) {
+                      // 2 card berdampingan
+                      return Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(child: buildDeviceCard(device1!, fontSizeCard, isSmallScreen)),
+                          // Garis abu-abu dihapus
+                          Expanded(child: buildDeviceCard(device2!, fontSizeCard, isSmallScreen)),
+                        ],
+                      );
+                    } else {
+                      // 2 card bertumpuk (portrait)
+                      return Column(
+                        children: [
+                          buildDeviceCard(device1!, fontSizeCard, isSmallScreen),
+                          SizedBox(height: padding),
+                          buildDeviceCard(device2!, fontSizeCard, isSmallScreen),
+                        ],
+                      );
+                    }
+                  },
+                ),
+            ],
           ],
         ),
       ),
@@ -306,7 +284,7 @@ class _ComparisonPageState extends State<ComparisonPage> {
 
   Widget buildDeviceCard(Comparison device, double fontSize, bool isSmallScreen) {
     return Container(
-      padding: EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(16.0),
       margin: EdgeInsets.symmetric(vertical: isSmallScreen ? 8.0 : 16.0),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -323,6 +301,7 @@ class _ComparisonPageState extends State<ComparisonPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Judul produk
           Text(
             device.productName,
             style: TextStyle(
@@ -330,14 +309,28 @@ class _ComparisonPageState extends State<ComparisonPage> {
               fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(height: 10),
-          CustomImageView(
-            imagePath: device.pictureUrl,
+          const SizedBox(height: 4),
+          // Brand Device
+          Text(
+            device.brand,
+            style: TextStyle(
+              fontSize: isSmallScreen ? 14 : 18,
+              color: Colors.grey[700],
+            ),
+          ),
+          const SizedBox(height: 10),
+          // Gambar dari picture_url
+          Image.network(
+            device.pictureUrl.replaceAll('&amp;', '&'),
             height: isSmallScreen ? 100 : 150,
             width: double.infinity,
-            fit: BoxFit.cover,
+            fit: BoxFit.contain,
+            errorBuilder: (context, error, stackTrace) {
+              return const Icon(Icons.broken_image, size: 50);
+            },
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
+          // Detail spesifikasi
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -349,6 +342,33 @@ class _ComparisonPageState extends State<ComparisonPage> {
               DetailRow(label: 'Processor', value: device.processor, fontSize: fontSize),
               DetailRow(label: 'Display', value: device.screenSize, fontSize: fontSize),
             ],
+          ),
+          const SizedBox(height: 16),
+          // Tombol View Product Page
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF6D0CC9), // Ungu
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+              ),
+              onPressed: () async {
+                final url = Uri.parse(device.url);
+                if (await canLaunchUrl(url)) {
+                  await launchUrl(url, mode: LaunchMode.externalApplication);
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Could not launch URL')),
+                  );
+                }
+              },
+              child: const Text(
+                'View Product Page',
+                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              ),
+            ),
           ),
         ],
       ),
@@ -370,9 +390,11 @@ class DetailRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Menghapus overflow: TextOverflow.ellipsis dan menambahkan softWrap serta maxLines agar teks dapat membungkus
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 2.0),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             '$label: ',
@@ -384,10 +406,9 @@ class DetailRow extends StatelessWidget {
           Expanded(
             child: Text(
               value,
-              style: TextStyle(
-                fontSize: fontSize,
-              ),
-              overflow: TextOverflow.ellipsis,
+              style: TextStyle(fontSize: fontSize),
+              softWrap: true,
+              maxLines: null, // Agar teks bisa multiline sesuai kebutuhan
             ),
           ),
         ],

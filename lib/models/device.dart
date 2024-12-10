@@ -37,11 +37,14 @@ class Comparison {
         required this.url,
     });
 
-    factory Comparison.fromJson(Map<String, dynamic> json) => Comparison(
+    factory Comparison.fromJson(Map<String, dynamic> json) {
+      String pictureUrl = json["picture_url"];
+      pictureUrl = pictureUrl.replaceAll('&amp;', '&');
+      return Comparison(
         model: json["model"],
         brand: json["brand"],
         productName: json["product_name"],
-        pictureUrl: json["picture_url"],
+        pictureUrl: pictureUrl,
         batteryCapacityMAh: json["battery_capacity_mAh"],
         priceInr: json["price_inr"],
         priceIdr: json["price_idr"],
@@ -50,7 +53,9 @@ class Comparison {
         processor: json["processor"],
         screenSize: json["screen_size"],
         url: json["url"],
-    );
+      );
+    }
+
 
     Map<String, dynamic> toJson() => {
         "model": model,
