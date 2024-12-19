@@ -1,111 +1,45 @@
-import 'dart:convert';
+// lib/presentation/detail/product_card.dart
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:jaket_mobile/app_module/data/model/product_entry.dart';
 import 'package:jaket_mobile/presentation/detail/detail_product.dart';
-import 'package:http/http.dart' as http;
-import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'package:jaket_mobile/auth_controller.dart';
 import 'package:provider/provider.dart';
 
-class ProductCard extends StatefulWidget {
+class ProductCard extends StatelessWidget {
   final ProductEntry product;
 
   const ProductCard({Key? key, required this.product}) : super(key: key);
 
   @override
-  State<ProductCard> createState() => _ProductCardState();
-}
-
-class _ProductCardState extends State<ProductCard> {
-  bool _isFavorite = false;
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _checkIfFavorite();
-    });
-  }
-
-  Future<void> _checkIfFavorite() async {
-    final request = context.read<CookieRequest>();
-    final url = "http://10.0.2.2:8000/wishlist/wish_json/";
-    final response = await request.get(url);
-
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      final productId = widget.product.pk;
-      final exists = (data as List).any((phone) => phone['pk'] == productId);
-
-      setState(() {
-        _isFavorite = exists;
-      });
-    } else {
-    }
-  }
-
-Future<void> _toggleFavorite() async {
-  final request = context.read<CookieRequest>();
-  final productId = widget.product.pk.toString();
-
-  if (_isFavorite) {
-    final url = "http://10.0.2.2:8000/wishlist/remove_flutter/$productId/";
-    final cookies = request.cookies.entries.map((e) => '${e.key}=${e.value}').join('; ');
-    final response = await http.delete(
-      Uri.parse(url),
-      headers: {
-        "Cookie": cookies,
-      },
-    );
-
-    if (response.statusCode == 200) {
-      setState(() {
-        _isFavorite = false;
-      });
-      await _checkIfFavorite(); 
-    } else {
-    }
-  } else {
-    final url = "http://10.0.2.2:8000/wishlist/add_to_favorite_flutter/";
-    final response = await request.postJson(
-      url,
-      jsonEncode({"phone_id": productId}),
-    );
-
-    if (response['status'] == 'success' || response['status'] == 'info' || response['status'] == null) {
-      setState(() {
-        _isFavorite = true;
-      });
-      await _checkIfFavorite(); 
-    } else {
-    }
-  }
-}
-
-
-  @override
   Widget build(BuildContext context) {
-    final fields = widget.product.fields;
-    final price = double.tryParse(fields.priceInr) ?? 0.0;
+    final authController = Provider.of<AuthController>(context);
     final formatter = NumberFormat.decimalPattern('id_ID');
 
-    int totalVotes = fields.oneStar + fields.twoStar + fields.threeStar + fields.fourStar + fields.fiveStar;
+    int totalVotes = product.fields.oneStar +
+        product.fields.twoStar +
+        product.fields.threeStar +
+        product.fields.fourStar +
+        product.fields.fiveStar;
     double averageRating = totalVotes > 0
-        ? (1 * fields.oneStar +
-            2 * fields.twoStar +
-            3 * fields.threeStar +
-            4 * fields.fourStar +
-            5 * fields.fiveStar) /
+        ? (1 * product.fields.oneStar +
+                2 * product.fields.twoStar +
+                3 * product.fields.threeStar +
+                4 * product.fields.fourStar +
+                5 * product.fields.fiveStar) /
             totalVotes
         : 0;
+
+    bool isFavorite = authController.isProductFavorite(product.pk);
 
     return GestureDetector(
       onTap: () {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => const ProductDetailPage(),
+            builder: (context) => ProductDetailPage(product: product), // Pass the product
           ),
         );
       },
@@ -120,7 +54,7 @@ Future<void> _toggleFavorite() async {
                 width: 100.0,
                 height: 150.0,
                 child: Image.network(
-                  fields.imageUrl,
+                  product.fields.imageUrl.isNotEmpty ? product.fields.imageUrl : '',
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) => Container(
                     color: Colors.grey[300],
@@ -136,7 +70,7 @@ Future<void> _toggleFavorite() async {
               children: [
                 Expanded(
                   child: Text(
-                    '${fields.brand} ${fields.model}',
+                    '${product.fields.brand} ${product.fields.model}',
                     style: GoogleFonts.inter(
                       fontSize: 13.0,
                       fontWeight: FontWeight.bold,
@@ -147,20 +81,51 @@ Future<void> _toggleFavorite() async {
                   ),
                 ),
                 IconButton(
-                  onPressed: _toggleFavorite,
-                  iconSize: 13.0,
+                  onPressed: () async {
+                    if (authController.isLoggedIn) {
+                      bool success;
+                      if (isFavorite) {
+                        success = await authController.removeFromFavorites(product.pk);
+                        if (success) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text("Removed from favorites")),
+                          );
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text("Failed to remove from favorites")),
+                          );
+                        }
+                      } else {
+                        success = await authController.addToFavorites(product.pk);
+                        if (success) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text("Added to favorites")),
+                          );
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text("Failed to add to favorites")),
+                          );
+                        }
+                      }
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text("Please log in to manage favorites")),
+                      );
+                    }
+                  },
+                  iconSize: 20.0,
                   padding: EdgeInsets.zero,
                   constraints: const BoxConstraints(),
                   icon: Icon(
-                    _isFavorite ? Icons.favorite : Icons.favorite_border,
-                    color: _isFavorite ? Colors.red : const Color(0xFF6D0CC9),
-                    size: 16.0,
+                    isFavorite ? Icons.favorite : Icons.favorite_border,
+                    color: isFavorite ? Colors.red : const Color(0xFF6D0CC9),
+                    size: 20.0,
                   ),
                 ),
               ],
             ),
             Text(
-              'Storage: ${fields.storage}, Memory: ${fields.ram}',
+              'Storage: ${product.fields.storage}, Memory: ${product.fields.ram}',
               style: GoogleFonts.inter(
                 fontSize: 10.0,
                 color: Colors.black,
@@ -176,7 +141,7 @@ Future<void> _toggleFavorite() async {
             ),
             const SizedBox(height: 5.0),
             Text(
-              'Rp.${formatter.format(price)}',
+              'Rp.${formatter.format(product.fields.priceInr ?? 0)}',
               style: GoogleFonts.inter(
                 fontSize: 12.0,
                 fontWeight: FontWeight.bold,

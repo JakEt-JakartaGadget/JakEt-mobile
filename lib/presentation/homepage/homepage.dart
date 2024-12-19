@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:jaket_mobile/presentation/homepage/choice_row.dart';
-import 'package:jaket_mobile/presentation/homepage/limited_product.dart';
+import 'package:provider/provider.dart';
 import 'package:jaket_mobile/widgets/custom_button_nav_bar.dart';
 import 'package:jaket_mobile/widgets/custom_slider.dart';
-import 'package:get/get.dart'; 
+import 'package:jaket_mobile/presentation/authentication/login.dart';
 import 'package:jaket_mobile/auth_controller.dart';
-import 'package:jaket_mobile/presentation/authentication/login.dart'; 
+import 'package:jaket_mobile/presentation/homepage/choice_row.dart';
+import 'package:jaket_mobile/presentation/homepage/limited_product.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
+  
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
-  final AuthController authController = Get.find<AuthController>();
 
   static const List<Widget> _widgetOptions = <Widget>[
     Center(child: Text('Home Page Content')),
@@ -32,8 +32,14 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  Future<void> _refresh() async {
+    final authController = Provider.of<AuthController>(context, listen: false);
+    await authController.checkLoginStatus();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final authController = Provider.of<AuthController>(context);
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -69,12 +75,15 @@ class _HomePageState extends State<HomePage> {
               ),
               child: GestureDetector(
                 onTap: () {
-                  if (authController.isLoggedIn.value) {
+                  if (authController.isLoggedIn) {
                     print("User is logged in");
                     _onItemTapped(4); 
                   } else {
-                    print("GAJELAS");
-                    Get.to(() => const LoginPage());
+                    print("User not logged in");
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const LoginPage()),
+                    );
                   }
                 },
                 child: const Padding(
@@ -89,48 +98,52 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const CustomCarousel(),
-            const SizedBox(height: 16.0),
-            const ChoiceRow(),
-            const SizedBox(height: 16.0),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "Recommended Product",
-                    style: GoogleFonts.inter(
-                      fontSize: 17,
-                      fontWeight: FontWeight.bold,
+      body: RefreshIndicator(
+        onRefresh: _refresh,
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const CustomCarousel(),
+              const SizedBox(height: 16.0),
+              const ChoiceRow(),
+              const SizedBox(height: 16.0),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Recommended Product",
+                      style: GoogleFonts.inter(
+                        fontSize: 17,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                  Row(
-                    children: [
-                      Text(
-                        "View All",
-                        style: GoogleFonts.inter(
-                          fontSize: 12,
-                          color: Color(0xFF2E29A6),
-                          fontWeight: FontWeight.bold,
+                    Row(
+                      children: [
+                        Text(
+                          "View All",
+                          style: GoogleFonts.inter(
+                            fontSize: 12,
+                            color: const Color(0xFF2E29A6),
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                      const Icon(
-                        Icons.arrow_forward,
-                        size: 15,
-                        color: Color(0xFF2E29A6),
-                      ),
-                    ],
-                  ),
-                ],
+                        const Icon(
+                          Icons.arrow_forward,
+                          size: 15,
+                          color: Color(0xFF2E29A6),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
-            const LimitedProductPage(),
-          ],
+              const LimitedProductPage(),
+            ],
+          ),
         ),
       ),
       bottomNavigationBar: CustomBottomNavBar(

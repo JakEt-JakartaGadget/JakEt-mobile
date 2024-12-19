@@ -1,3 +1,5 @@
+// lib/app_module/data/model/product_entry.dart
+
 import 'dart:convert';
 
 List<ProductEntry> productEntryFromJson(String str) =>
@@ -18,9 +20,9 @@ class ProductEntry {
   });
 
   factory ProductEntry.fromJson(Map<String, dynamic> json) => ProductEntry(
-        model: json["model"] ?? '', 
-        pk: json["pk"] ?? '', 
-        fields: Fields.fromJson(json["fields"] ?? {}), 
+        model: json["model"] ?? '',
+        pk: json["pk"] ?? '',
+        fields: Fields.fromJson(json["fields"] ?? {}),
       );
 
   Map<String, dynamic> toJson() => {
@@ -38,9 +40,9 @@ class Fields {
   double screenSizeInches;
   String cameraMp;
   int batteryCapacityMah;
-  String priceUsd;
-  String priceInr;
-  double rating; 
+  double priceUsd;
+  double? priceInr;
+  double rating;
   String imageUrl;
   int oneStar;
   int twoStar;
@@ -68,22 +70,22 @@ class Fields {
   });
 
   factory Fields.fromJson(Map<String, dynamic> json) => Fields(
-        brand: json["brand"] ?? '', 
-        model: json["model"] ?? '', 
-        storage: json["storage"] ?? '', 
+        brand: json["brand"] ?? '',
+        model: json["model"] ?? '',
+        storage: json["storage"] ?? '',
         ram: json["ram"] ?? '',
-        screenSizeInches: (json["screen_size_inches"]?.toDouble() ?? 0.0), 
+        screenSizeInches: (json["screen_size_inches"] as num?)?.toDouble() ?? 0.0,
         cameraMp: json["camera_mp"] ?? '',
-        batteryCapacityMah: json["battery_capacity_mAh"] ?? 0, 
-        priceUsd: json["price_usd"] ?? '0', 
-        priceInr: json["price_inr"] ?? '0',
-        rating: (json["rating"]?.toDouble() ?? 0.0), 
-        imageUrl: json["image_url"] ?? '', 
+        batteryCapacityMah: json["battery_capacity_mAh"] ?? 0,
+        priceUsd: _parseDouble(json["price_usd"]),
+        priceInr: json["price_inr"] != null ? _parseDouble(json["price_inr"]) : null,
+        rating: (json["rating"] as num?)?.toDouble() ?? 0.0,
+        imageUrl: json["image_url"] ?? '',
         oneStar: json["one_star"] ?? 0,
-        twoStar: json["two_star"] ?? 0, 
-        threeStar: json["three_star"] ?? 0, 
-        fourStar: json["four_star"] ?? 0, 
-        fiveStar: json["five_star"] ?? 0, 
+        twoStar: json["two_star"] ?? 0,
+        threeStar: json["three_star"] ?? 0,
+        fourStar: json["four_star"] ?? 0,
+        fiveStar: json["five_star"] ?? 0,
       );
 
   Map<String, dynamic> toJson() => {
@@ -104,4 +106,15 @@ class Fields {
         "four_star": fourStar,
         "five_star": fiveStar,
       };
+
+  // Helper method to parse double values from dynamic input
+  static double _parseDouble(dynamic value) {
+    if (value is String) {
+      return double.tryParse(value) ?? 0.0;
+    } else if (value is num) {
+      return value.toDouble();
+    } else {
+      return 0.0;
+    }
+  }
 }

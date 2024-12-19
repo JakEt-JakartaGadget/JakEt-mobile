@@ -1,13 +1,10 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:jaket_mobile/presentation/homepage/homepage.dart';
-import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
-import 'package:jaket_mobile/presentation/authentication/register.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:jaket_mobile/presentation/homepage/homepage.dart';
+import 'package:jaket_mobile/presentation/authentication/register.dart';
 import 'package:jaket_mobile/auth_controller.dart';
+import 'package:jaket_mobile/app_module/data/model/user_check.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -21,12 +18,64 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _passwordController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
-  final AuthController authController = Get.find<AuthController>();
+
+  void _handleLogin(BuildContext context) async {
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    final authController = Provider.of<AuthController>(context, listen: false);
+    final String inputUsername = _usernameController.text.trim();
+    final String password = _passwordController.text.trim();
+
+    try {
+      UserResponse response = await authController.login(inputUsername, password);
+
+      if (response.status) {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const HomePage()),
+          (Route<dynamic> route) => false,
+        );
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Welcome ${response.username}!")),
+        );
+      } else {
+        _showErrorDialog(response.message);
+      }
+    } catch (e) {
+      _showErrorDialog('An error occurred: $e');
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Error'),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    final request = context.watch<CookieRequest>();
-
     return Scaffold(
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -172,25 +221,25 @@ class _LoginPageState extends State<LoginPage> {
                   height: 50,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.transparent, 
-                      shadowColor: Colors.transparent, 
+                      backgroundColor: Colors.transparent,
+                      shadowColor: Colors.transparent,
                       padding: EdgeInsets.zero,
                     ),
-                    onPressed: _isLoading ? null : _handleLogin,
+                    onPressed: _isLoading ? null : () => _handleLogin(context),
                     child: Ink(
                       decoration: BoxDecoration(
                         gradient: const LinearGradient(
                           colors: [
                             Color(0xFF985CEF),
-                            Color(0xFF6D0CC9), 
-                            Color(0xFF527EEE), 
-                            Color(0xFF766DEE), 
+                            Color(0xFF6D0CC9),
+                            Color(0xFF527EEE),
+                            Color(0xFF766DEE),
                             Color(0xFF985CEF),
                           ],
                           begin: Alignment.centerLeft,
                           end: Alignment.centerRight,
                         ),
-                        borderRadius: BorderRadius.circular(30.0), 
+                        borderRadius: BorderRadius.circular(30.0),
                         border: Border.all(
                           color: Colors.transparent,
                           width: 2.0,
@@ -223,92 +272,29 @@ class _LoginPageState extends State<LoginPage> {
                         fontSize: 13.0,
                       ),
                     ),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const RegisterPage()),
-                      );
-                    },
-                    child: Text(
-                      'Register now',
-                      style: GoogleFonts.inter(
-                        color: const Color(0xFF2E29A6),
-                        fontSize: 13.0,
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const RegisterPage()),
+                        );
+                      },
+                      child: Text(
+                        'Register now',
+                        style: GoogleFonts.inter(
+                          color: const Color(0xFF2E29A6),
+                          fontSize: 13.0,
+                        ),
                       ),
                     ),
-                  ),
                   ],
                 ),
               ],
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  Future<void> _handleLogin() async {
-    if (!_formKey.currentState!.validate()) return;
-
-    setState(() {
-      _isLoading = true;
-    });
-
-    final request = context.read<CookieRequest>();
-    final String username = _usernameController.text.trim();
-    final String password = _passwordController.text.trim();
-
-    try {
-      final response = await request.login(
-        "http://10.0.2.2:8000//authenticate/login_app/",
-        // "http://192.168.1.100:8000/authenticate/login_app/",
-        {'username': username, 'password': password},
-      );
-
-      if (request.loggedIn) {
-        if (context.mounted) {
-          String message = response['message'] ?? 'Login successful';
-          String uname = response['username'] ?? username;
-          authController.login();
-          Get.off(() => const HomePage());
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(
-                SnackBar(content: Text("$message, Welcome $uname!")));
-        }
-      } else {
-        _showErrorDialog(response['message'] ?? 'Login failed');
-      }
-    } catch (e) {
-      _showErrorDialog('An error occurred: $e');
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
-    }
-  }
-
-  void _showErrorDialog(String message) {
-    if (context.mounted) {
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Error'),
-          content: Text(message),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        ),
-      );
-    }
+        )
+        );
   }
 
   @override

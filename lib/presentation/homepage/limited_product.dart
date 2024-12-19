@@ -1,3 +1,5 @@
+// lib/presentation/detail/limited_product.dart
+
 import 'package:flutter/material.dart';
 import 'package:jaket_mobile/app_module/data/model/product_entry.dart';
 import 'package:jaket_mobile/presentation/detail/product_card.dart';
@@ -17,17 +19,6 @@ class LimitedProductPage extends StatelessWidget {
       }
     }
     return listProducts;
-  }
-
-  double calculateAverageRating(Fields fields) {
-    int totalVotes = fields.oneStar + fields.twoStar + fields.threeStar + fields.fourStar + fields.fiveStar;
-    if (totalVotes == 0) return 0.0;
-    var weightedSum = (1 * fields.oneStar) + 
-                         (2 * fields.twoStar) + 
-                         (3 * fields.threeStar) + 
-                         (4 * fields.fourStar) + 
-                         (5 * fields.fiveStar);
-    return weightedSum / totalVotes;
   }
 
   @override
