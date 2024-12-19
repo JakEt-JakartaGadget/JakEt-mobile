@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:get/get.dart';
 import 'package:jaket_mobile/presentation/detail/all_product.dart'; // Import ProductPagee
 import 'package:jaket_mobile/presentation/homepage/homepage.dart';
+import 'package:jaket_mobile/presentation/wishlist/wishlist.dart';
 // import 'package:jaket_mobile/presentation/service_center/service_center_page.dart'; // Import ServiceCenterPage
 // import 'package:jaket_mobile/presentation/article/article_page.dart'; // Import ArticlePage
 // import 'package:jaket_mobile/presentation/wishlist/wishlist_page.dart'; // Import WishlistPage
@@ -25,7 +26,7 @@ class CustomBottomNavBar extends StatelessWidget {
         // Get.offAll(() => const ArticlePage());
         break;
       case 4:
-        // Get.offAll(() => const WishlistPage());
+        Get.offAll(() => const WishlistPage());
         break;
       default:
         break;
@@ -78,7 +79,6 @@ class CustomBottomNavBar extends StatelessWidget {
                 if (index != 2) { // Indeks 2 adalah tombol Product
                   _navigateTo(index);
                 }
-                // Jika indeks 2, tidak melakukan apa-apa karena tombol Product dikelola secara terpisah
               },
               items: const [
                 BottomNavigationBarItem(
