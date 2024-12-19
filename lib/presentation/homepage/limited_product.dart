@@ -1,5 +1,3 @@
-// lib/presentation/detail/limited_product.dart
-
 import 'package:flutter/material.dart';
 import 'package:jaket_mobile/app_module/data/model/product_entry.dart';
 import 'package:jaket_mobile/presentation/detail/product_card.dart';
