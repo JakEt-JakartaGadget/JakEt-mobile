@@ -84,7 +84,7 @@ class _HomePageState extends State<HomePage> {
           children: [
             const CustomCarousel(),
             const SizedBox(height: 16.0),
-            ChoiceRow(),
+            const ChoiceRow(),
             const SizedBox(height: 16.0),
             Container(
               padding: const EdgeInsets.all(16.0),

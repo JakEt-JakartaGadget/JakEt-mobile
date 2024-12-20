@@ -113,9 +113,9 @@ class CustomRadioButton extends StatelessWidget {
             vertical: -4,
             horizontal: -4,
           ),
-          fillColor: MaterialStateProperty.resolveWith((states) {
+          fillColor: WidgetStateProperty.resolveWith((states) {
             // active
-            if (states.contains(MaterialState.selected)) {
+            if (states.contains(WidgetState.selected)) {
               return Colors.blue;
             }
             // inactive

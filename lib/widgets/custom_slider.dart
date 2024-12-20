@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 class CustomCarousel extends StatefulWidget {
-  const CustomCarousel({Key? key}) : super(key: key);
+  const CustomCarousel({super.key});
 
   @override
   _CustomCarouselState createState() => _CustomCarouselState();

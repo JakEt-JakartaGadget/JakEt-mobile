@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:get/get.dart';
-import 'package:jaket_mobile/presentation/homepage/comparison.dart'; 
+import 'package:jaket_mobile/presentation/comparison/comparison.dart'; 
 
 
 class ChoiceRow extends StatefulWidget {
