@@ -68,6 +68,8 @@ flutter:
     - assets/images/slider/1.png
     - assets/images/slider/2.png
     - assets/images/slider/3.png
+    - assets/images/service_center/booked.png
+    - assets/images/service_center/notavailable.png
 
   fonts:
     - family: Poppins
