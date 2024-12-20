@@ -5,8 +5,23 @@ import 'package:jaket_mobile/widgets/custom_button_nav_bar.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 
-class WishlistPage extends StatelessWidget {
+class WishlistPage extends StatefulWidget {
   const WishlistPage({Key? key}) : super(key: key);
+
+  @override
+  _WishlistPageState createState() => _WishlistPageState();
+}
+
+class _WishlistPageState extends State<WishlistPage> {
+  late Future<List<ProductEntry>> _futureProducts;
+  List<ProductEntry> _products = [];
+
+  @override
+  void initState() {
+    super.initState();
+    final request = context.read<CookieRequest>();
+    _futureProducts = fetchProducts(request);
+  }
 
   Future<List<ProductEntry>> fetchProducts(CookieRequest request) async {
     final response = await request.get('http://10.0.2.2:8000/wishlist/wish_json');
@@ -17,7 +32,14 @@ class WishlistPage extends StatelessWidget {
         listProducts.add(ProductEntry.fromJson(d));
       }
     }
+    _products = listProducts;
     return listProducts;
+  }
+
+  void _removeProduct(String productId) {
+    setState(() {
+      _products.removeWhere((product) => product.pk == productId);
+    });
   }
 
   @override
@@ -28,20 +50,20 @@ class WishlistPage extends StatelessWidget {
         title: const Text(
           'My Wishlist',
           style: TextStyle(
-            fontFamily: 'Inter', // Pastikan font 'Inter' sudah ditambahkan di pubspec.yaml
+            fontFamily: 'Inter',
             fontSize: 20,
-            fontWeight: FontWeight.w600, // Semi-bold
+            fontWeight: FontWeight.w600,
           ),
         ),
-        centerTitle: true, // Menempatkan judul di tengah
-        backgroundColor: Colors.white, // Sesuaikan warna latar belakang AppBar jika diperlukan
-        elevation: 0, // Menghilangkan bayangan bawah AppBar
-        iconTheme: const IconThemeData(color: Colors.black), // Menyesuaikan warna ikon jika diperlukan
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.black),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: FutureBuilder<List<ProductEntry>>(
-          future: fetchProducts(request),
+          future: _futureProducts,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
@@ -54,13 +76,13 @@ class WishlistPage extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 20,
                     color: Color(0xff59A5D8),
-                    fontFamily: 'Inter', 
+                    fontFamily: 'Inter',
                   ),
                   textAlign: TextAlign.center,
                 ),
               );
             } else {
-              final limitedProducts = snapshot.data!.take(6).toList();
+              final limitedProducts = _products.take(6).toList();
 
               return GridView.builder(
                 shrinkWrap: true,
@@ -74,7 +96,12 @@ class WishlistPage extends StatelessWidget {
                 ),
                 itemBuilder: (context, index) {
                   final product = limitedProducts[index];
-                  return ProductCard(product: product);
+                  return ProductCard(
+                    product: product,
+                    onUnfavorite: () {
+                      _removeProduct(product.pk);
+                    },
+                  );
                 },
               );
             }

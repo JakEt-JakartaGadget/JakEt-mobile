@@ -2,46 +2,80 @@ import 'package:flutter/material.dart';
 import 'package:jaket_mobile/app_module/data/model/product_entry.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:jaket_mobile/presentation/detail/spesification.dart';
+import 'package:jaket_mobile/presentation/review/review_list.dart';
 import 'package:provider/provider.dart';
 import 'package:jaket_mobile/auth_controller.dart';
+import 'package:jaket_mobile/app_module/data/model/review.dart';
 
-class ProductDetailPage extends StatelessWidget {
+class ProductDetailPage extends StatefulWidget {
   final ProductEntry product;
 
   const ProductDetailPage({Key? key, required this.product}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final formatter = NumberFormat.decimalPattern('id_ID');
-    final authController = Provider.of<AuthController>(context);
-    final isFavorite = authController.isProductFavorite(product.pk);
+  _ProductDetailPageState createState() => _ProductDetailPageState();
+}
 
-    int totalVotes = product.fields.oneStar +
-        product.fields.twoStar +
-        product.fields.threeStar +
-        product.fields.fourStar +
-        product.fields.fiveStar;
-    double averageRating = totalVotes > 0
-        ? (1 * product.fields.oneStar +
-                2 * product.fields.twoStar +
-                3 * product.fields.threeStar +
-                4 * product.fields.fourStar +
-                5 * product.fields.fiveStar) /
-            totalVotes
-        : 0;
+class _ProductDetailPageState extends State<ProductDetailPage> {
+  int totalVotes = 0;
+  double averageRating = 0.0;
+  late NumberFormat formatter;
+  late AuthController authController;
+
+  Map<int, int> ratingCounts = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0};
+
+  List<Review> reviews = [];
+
+  @override
+  void initState() {
+    super.initState();
+    formatter = NumberFormat.decimalPattern('id_ID');
+    authController = Provider.of<AuthController>(context, listen: false);
+    _fetchAndCalculateRatings();
+  }
+
+  Future<void> _fetchAndCalculateRatings() async {
+    try {
+      final fetchedReviews = await authController.fetchReviews(widget.product.pk);
+      setState(() {
+        reviews = fetchedReviews;
+        totalVotes = reviews.length;
+        averageRating = totalVotes > 0
+            ? reviews.map((r) => r.rating).reduce((a, b) => a + b) / totalVotes
+            : 0.0;
+
+        // Reset rating counts
+        ratingCounts = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0};
+        for (var review in reviews) {
+          if (ratingCounts.containsKey(review.rating)) {
+            ratingCounts[review.rating] = ratingCounts[review.rating]! + 1;
+          }
+        }
+      });
+    } catch (e) {
+      // Handle error if needed
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error fetching reviews: $e')),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isFavorite = authController.isProductFavorite(widget.product.pk);
 
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // Stack untuk gambar dan tombol back
+            // Gambar Produk
             Stack(
               children: [
-                // Gambar Produk
                 Image.network(
-                  product.fields.imageUrl,
+                  widget.product.fields.imageUrl,
                   width: double.infinity,
-                  height: 300, // Atur tinggi gambar sesuai kebutuhan
+                  height: 300,
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) => Container(
                     height: 300,
@@ -51,14 +85,19 @@ class ProductDetailPage extends StatelessWidget {
                     ),
                   ),
                 ),
-                // Tombol Back
                 Positioned(
-                  top: 40, 
+                  top: 40,
                   left: 16,
                   child: CircleAvatar(
+                    minRadius: 18,
+                    maxRadius: 19,
                     backgroundColor: Colors.black54,
                     child: IconButton(
-                      icon: const Icon(Icons.arrow_back, color: Colors.white),
+                      icon: const Icon(
+                        Icons.arrow_back,
+                        color: Colors.white,
+                        size: 16,
+                      ),
                       onPressed: () => Navigator.of(context).pop(),
                     ),
                   ),
@@ -67,51 +106,51 @@ class ProductDetailPage extends StatelessWidget {
             ),
             const SizedBox(height: 16.0),
 
-            // Baris Harga dan Tombol Like
+            // Harga dan Favorit
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  // Harga
                   Text(
-                    'Rp.${formatter.format(product.fields.priceInr ?? 0)}',
+                    'Rp.${formatter.format(widget.product.fields.priceInr ?? 0)},00',
                     style: GoogleFonts.inter(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
+                      fontSize: 22,
+                      fontWeight: FontWeight.w600,
+                      color: const Color(0xFF6D0CC9),
                     ),
                   ),
-                  // Tombol Like
                   IconButton(
                     onPressed: () async {
                       if (authController.isLoggedIn) {
                         bool success;
                         if (isFavorite) {
-                          success = await authController.removeFromFavorites(product.pk);
+                          success = await authController.removeFromFavorites(widget.product.pk);
                           if (success) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text("Removed from favorites")),
+                              const SnackBar(content: Text('Produk dihapus dari favorit.')),
                             );
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text("Failed to remove from favorites")),
+                              const SnackBar(content: Text('Gagal menghapus dari favorit.')),
                             );
                           }
                         } else {
-                          success = await authController.addToFavorites(product.pk);
+                          success = await authController.addToFavorites(widget.product.pk);
                           if (success) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text("Added to favorites")),
+                              const SnackBar(content: Text('Produk ditambahkan ke favorit.')),
                             );
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text("Failed to add to favorites")),
+                              const SnackBar(content: Text('Gagal menambahkan ke favorit.')),
                             );
                           }
                         }
+                        setState(() {}); // Memperbarui ikon favorit
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text("Please log in to manage favorites")),
+                          const SnackBar(content: Text('Silakan login untuk menandai favorit.')),
                         );
                       }
                     },
@@ -123,18 +162,17 @@ class ProductDetailPage extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(height: 16.0),
 
-            // Brand + Model
+            // Nama Produk
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  '${product.fields.brand} ${product.fields.model}',
+                  '${widget.product.fields.brand} ${widget.product.fields.model}',
                   style: GoogleFonts.inter(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ),
@@ -145,9 +183,9 @@ class ProductDetailPage extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Text(
-                'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam.',
+                'One of the outstanding outcomes from ${widget.product.fields.brand} is ${widget.product.fields.model}. This phone is a great choice for those who are looking for a phone with a good camera, large storage, and long battery life. Which comes with ${widget.product.fields.ram} GB RAM and ${widget.product.fields.storage} GB storage.',
                 style: GoogleFonts.inter(
-                  fontSize: 16,
+                  fontSize: 12,
                 ),
               ),
             ),
@@ -161,55 +199,52 @@ class ProductDetailPage extends StatelessWidget {
                 child: Text(
                   'Specification',
                   style: GoogleFonts.inter(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ),
             ),
             const SizedBox(height: 8.0),
 
-            // Spesifikasi Camera
+            // Baris Spesifikasi
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: SpecificationRow(
                 title: 'Camera',
-                value: product.fields.cameraMp,
+                value: widget.product.fields.cameraMp.toString(),
               ),
             ),
             const SizedBox(height: 8.0),
 
-            // Spesifikasi Storage
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: SpecificationRow(
                 title: 'Storage',
-                value: product.fields.storage,
+                value: widget.product.fields.storage.toString(),
               ),
             ),
             const SizedBox(height: 8.0),
 
-            // Spesifikasi Battery
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: SpecificationRow(
                 title: 'Battery',
-                value: '${product.fields.batteryCapacityMah} mAh',
+                value: '${widget.product.fields.batteryCapacityMah} mAh',
               ),
             ),
             const SizedBox(height: 8.0),
 
-            // Spesifikasi Display
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: SpecificationRow(
                 title: 'Display',
-                value: '${product.fields.screenSizeInches}"',
+                value: '${widget.product.fields.screenSizeInches}" pixels',
               ),
             ),
             const SizedBox(height: 16.0),
 
-            // Rating Angka
+            // Ringkasan Rating
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Row(
@@ -217,8 +252,21 @@ class ProductDetailPage extends StatelessWidget {
                   Text(
                     'Rating: ${averageRating.toStringAsFixed(1)}/5',
                     style: GoogleFonts.inter(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(width: 5),
+                  Icon(
+                    Icons.person,
+                    size: 16,
+                    color: Colors.grey[700],
+                  ),
+                  Text(
+                    totalVotes.toString(),
+                    style: GoogleFonts.inter(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ],
@@ -235,7 +283,30 @@ class ProductDetailPage extends StatelessWidget {
                 }),
               ),
             ),
-            const SizedBox(height: 16.0),
+            const SizedBox(height: 8.0),
+
+            // Judul Ulasan Produk
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Ulasan Produk',
+                  style: GoogleFonts.inter(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ),
+
+            // Daftar Ulasan
+            ReviewList(
+              productId: widget.product.pk,
+              reviews: reviews,
+              ratingCounts: ratingCounts,
+              onReviewChanged: _fetchAndCalculateRatings, // Memanggil metode untuk memperbarui rating
+            ),
           ],
         ),
       ),
@@ -245,58 +316,22 @@ class ProductDetailPage extends StatelessWidget {
   Widget _buildStar(int index, double rating) {
     int fullStars = rating.floor();
     double fractional = rating - fullStars;
-    Color starColor = Colors.yellow;
 
     if (index < fullStars) {
-      return const Icon(Icons.star, color: Colors.yellow, size: 24.0);
+      return const Icon(Icons.star, color: Colors.yellow, size: 20.0);
     } else if (index == fullStars && fractional >= 0.5) {
       return Stack(
         children: [
-          const Icon(Icons.star_border, color: Colors.yellow, size: 24.0),
+          const Icon(Icons.star_border, color: Colors.yellow, size: 20.0),
           ClipRect(
             clipper: HalfClipper(),
-            child: const Icon(Icons.star, color: Colors.yellow, size: 24.0),
+            child: const Icon(Icons.star, color: Colors.yellow, size: 20.0),
           ),
         ],
       );
     } else {
-      return const Icon(Icons.star_border, color: Colors.yellow, size: 24.0);
+      return const Icon(Icons.star, color: Colors.grey, size: 20.0);
     }
-  }
-}
-
-class SpecificationRow extends StatelessWidget {
-  final String title;
-  final String value;
-
-  const SpecificationRow({Key? key, required this.title, required this.value}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        // Judul Spesifikasi
-        SizedBox(
-          width: 100, // Sesuaikan lebar sesuai kebutuhan
-          child: Text(
-            '$title:',
-            style: GoogleFonts.inter(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-        Expanded(
-          child: Text(
-            value,
-            style: GoogleFonts.inter(
-              fontSize: 16,
-            ),
-          ),
-        ),
-      ],
-    );
   }
 }
 

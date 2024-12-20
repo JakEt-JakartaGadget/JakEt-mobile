@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jaket_mobile/app_module/data/model/review.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:jaket_mobile/app_module/data/model/user_check.dart';
 import 'dart:convert';
@@ -149,5 +150,80 @@ class AuthController extends ChangeNotifier {
     return _favoriteProducts.any((product) => product.pk == phoneId);
   }
 
-  
+    Future<List<Review>> fetchReviews(String productId) async {
+    if (!_isLoggedIn) {
+      throw Exception('Anda harus login untuk melihat ulasan.');
+    }
+
+    final url = "http://10.0.2.2:8000/detail/list_review/$productId/";
+    final response = await request.get(url);
+
+    if (response['status'] == 'success') {
+      List<dynamic> reviewsJson = response['reviews'];
+      return reviewsJson.map((json) => Review.fromJson(json)).toList();
+    } else {
+      throw Exception(response['message'] ?? 'Gagal memuat ulasan.');
+    }
+  }
+
+  Future<bool> addReview(String productId, String content, int rating) async {
+    final url = "http://10.0.2.2:8000/detail/create_review_flutter/";
+    final data = {
+      'product_id': productId,
+      'content': content,
+      'rating': rating.toString(),
+    };
+
+
+    final jsonData = jsonEncode(data);
+
+    final response = await request.postJson(url, jsonData);
+
+    if (response['status'] == 'success') {
+      return true;
+    } else {
+      throw Exception(response['message'] ?? 'Gagal menambahkan ulasan.');
+    }
+  }
+
+  Future<bool> editReview(int reviewId, {String? content, int? rating}) async {
+    final url = "http://10.0.2.2:8000/detail/edit_review_flutter/$reviewId/";
+    Map<String, dynamic> data = {};
+
+    if (content != null) {
+      data['content'] = content;
+    }
+    if (rating != null) {
+      data['rating'] = rating.toString();
+    }
+
+    if (data.isEmpty) {
+      throw Exception('Tidak ada data yang diubah.');
+    }
+
+    final jsonData = jsonEncode(data);
+
+    final response = await request.postJson(url, jsonData);
+
+    if (response['status'] == 'success') {
+      return true;
+    } else {
+      throw Exception(response['message'] ?? 'Gagal mengedit ulasan.');
+    }
+  }
+
+  Future<bool> deleteReview(int reviewId) async {
+    if (!_isLoggedIn) {
+      throw Exception('Anda harus login untuk menghapus ulasan.');
+    }
+
+    final url = "http://10.0.2.2:8000/detail/delete_review_flutter/$reviewId/";
+    final response = await request.postJson(url, jsonEncode({}));
+
+    if (response['status'] == 'success') {
+      return true;
+    } else {
+      throw Exception(response['message'] ?? 'Gagal menghapus ulasan.');
+    }
+  }
 }

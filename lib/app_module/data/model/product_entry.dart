@@ -1,5 +1,3 @@
-// lib/app_module/data/model/product_entry.dart
-
 import 'dart:convert';
 
 List<ProductEntry> productEntryFromJson(String str) =>
@@ -107,7 +105,6 @@ class Fields {
         "five_star": fiveStar,
       };
 
-  // Helper method to parse double values from dynamic input
   static double _parseDouble(dynamic value) {
     if (value is String) {
       return double.tryParse(value) ?? 0.0;

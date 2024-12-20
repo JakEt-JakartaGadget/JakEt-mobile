@@ -1,17 +1,22 @@
-// lib/presentation/detail/product_card.dart
-
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:jaket_mobile/app_module/data/model/product_entry.dart';
+import 'package:jaket_mobile/presentation/authentication/login.dart';
 import 'package:jaket_mobile/presentation/detail/detail_product.dart';
 import 'package:jaket_mobile/auth_controller.dart';
 import 'package:provider/provider.dart';
 
 class ProductCard extends StatelessWidget {
   final ProductEntry product;
+  final VoidCallback? onUnfavorite;
 
-  const ProductCard({Key? key, required this.product}) : super(key: key);
+  const ProductCard({
+    Key? key,
+    required this.product,
+    this.onUnfavorite,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +44,7 @@ class ProductCard extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ProductDetailPage(product: product), // Pass the product
+            builder: (context) => ProductDetailPage(product: product),
           ),
         );
       },
@@ -54,7 +59,9 @@ class ProductCard extends StatelessWidget {
                 width: 100.0,
                 height: 150.0,
                 child: Image.network(
-                  product.fields.imageUrl.isNotEmpty ? product.fields.imageUrl : '',
+                  product.fields.imageUrl.isNotEmpty
+                      ? product.fields.imageUrl
+                      : '',
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) => Container(
                     color: Colors.grey[300],
@@ -85,31 +92,24 @@ class ProductCard extends StatelessWidget {
                     if (authController.isLoggedIn) {
                       bool success;
                       if (isFavorite) {
-                        success = await authController.removeFromFavorites(product.pk);
+                        success = await authController
+                            .removeFromFavorites(product.pk);
                         if (success) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text("Removed from favorites")),
-                          );
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text("Failed to remove from favorites")),
-                          );
-                        }
+                          if (onUnfavorite != null) {
+                            onUnfavorite!();
+                          }
+                        } else {}
                       } else {
-                        success = await authController.addToFavorites(product.pk);
+                        success =
+                            await authController.addToFavorites(product.pk);
                         if (success) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text("Added to favorites")),
-                          );
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text("Failed to add to favorites")),
-                          );
-                        }
+                        } else {}
                       }
                     } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text("Please log in to manage favorites")),
+                      GestureDetector(
+                        onTap: () {
+                          Get.to(() => const LoginPage());
+                        },
                       );
                     }
                   },
@@ -174,7 +174,7 @@ class ProductCard extends StatelessWidget {
         ],
       );
     } else {
-      return Icon(Icons.star_border, color: starColor, size: 12.0);
+      return const Icon(Icons.star, color: Colors.grey , size: 12.0);
     }
   }
 }
