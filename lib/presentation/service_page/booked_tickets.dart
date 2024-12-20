@@ -439,11 +439,19 @@ class _BookedTicketsSectionState extends State<BookedTicketsSection> {
               ),
             );
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(
-              child: Text(
-                'No booked tickets available.',
-                style: TextStyle(fontSize: 16),
-              ),
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  'assets/images/service_center/booked.png', 
+                  height: 150, 
+                ),
+                const SizedBox(height: 16), 
+                const Text(
+                  'No booked tickets available.',
+                  style: TextStyle(fontSize: 16),
+                ),
+              ],
             );
           } else {
             return Column(

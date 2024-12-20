@@ -1,6 +1,7 @@
 import 'package:jaket_mobile/presentation/service_page/models/tiket_entry.dart';
 import 'package:jaket_mobile/presentation/service_page/booked_tickets.dart';
 import 'package:jaket_mobile/presentation/service_page/schedule_appointment.dart';
+import 'package:jaket_mobile/widgets/custom_button_nav_bar.dart';
 import 'package:jaket_mobile/widgets/service_center_utils.dart';
 import 'package:jaket_mobile/presentation/service_page/servicecenter_detail.dart';
 import 'package:flutter/material.dart';
@@ -82,7 +83,14 @@ class _ServiceCenterPageState extends State<ServiceCenterPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Service Centers'),
+        title: const Text(
+          'Service Centers',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 20.0,
+          ),
+        ),
+        centerTitle: true,
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -168,8 +176,8 @@ class _ServiceCenterPageState extends State<ServiceCenterPage> {
                         child: Text(
                           'No service centers available.',
                           style: TextStyle(
-                            fontSize: 20,
-                            color: Color(0xff59A5D8),
+                            fontSize: 19,
+                            color: Color.fromARGB(255, 0, 0, 0),
                           ),
                         ),
                       ),
@@ -182,16 +190,26 @@ class _ServiceCenterPageState extends State<ServiceCenterPage> {
                           selectedSortOption: _selectedSortOption,
                         ); 
                     if (serviceCenters.isEmpty) {
-                      return const Padding(
-                        padding: EdgeInsets.only(top: 50.0),
-                        child: Center(
-                          child: Text(
-                            'No service centers match your search.',
-                            style: TextStyle(
-                              fontSize: 20,
-                              color: Color(0xff59A5D8),
+                      return Padding(
+                        padding: EdgeInsets.only(top: 80.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              'assets/images/service_center/notavailable.png', 
+                              height: 150, 
                             ),
-                          ),
+                            const SizedBox(height: 16), 
+                            const Center(
+                              child: Text(
+                                'No service centers match your search.',
+                                style: TextStyle(
+                                  fontSize: 17,
+                                  color: Color.fromARGB(255, 39, 15, 15),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       );
                     }
@@ -357,6 +375,7 @@ class _ServiceCenterPageState extends State<ServiceCenterPage> {
           ],
         ),
       ),
+      bottomNavigationBar: const CustomBottomNavBar(),
     );
   }
 }
