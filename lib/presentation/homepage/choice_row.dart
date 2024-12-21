@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:get/get.dart';
+import 'package:jaket_mobile/presentation/comparison/comparison.dart'; 
+
 
 class ChoiceRow extends StatefulWidget {
   const ChoiceRow({super.key});
@@ -27,7 +30,7 @@ class _ChoiceRowState extends State<ChoiceRow> {
             icon: Icons.sync_alt,
             label: "Comparison",
             onTap: () {
-              print("Comparison tapped");
+              Get.to(() => const ComparisonPage());
             },
           ),
           const SizedBox(width: 20.0),
