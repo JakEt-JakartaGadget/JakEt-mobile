@@ -80,14 +80,6 @@ Dengan **JakEt**, kami berharap dapat memberikan pengalaman digital yang lebih m
 - Berkomunikasi dengan Customer Service melalui fitur chat untuk mendapatkan bantuan atau informasi lebih lanjut.
 - Mengakses dan mengelola profil pengguna.
 
-**3. Admin**
-- Mengakses Dashboard untuk insert, edit, dan delete produk dalam database
-- Menanggapi chat user dalam bagian Customer Service
-- Menambahkan artikel terbaru mengenai gadget dalam aplikasi
-- Memantau appointment yang dibuat oleh user
-- Mengelola informasi service center yang tersedia
-- Mengelola dan memperbarui dataset produk yang digunakan dalam aplikasi
-
 ## 🔄 Alur Integrasi Aplikasi Mobile dan Web (Django - Flutter) 🔄
 
 1. **Persiapan Proyek**  
@@ -130,3 +122,6 @@ Dengan **JakEt**, kami berharap dapat memberikan pengalaman digital yang lebih m
    
 ## 🎨 Tautan Desain Aplikasi 🎨
 Tautan desain aplikasi: https://www.figma.com/design/HcGymRYfGfosqGJk7KvEc5/JakEt?node-id=789-426&t=8MfI33vzERljEQzc-1
+
+## Tautan Download App
+https://install.appcenter.ms/users/anthonyef09/apps/jaket/distribution_groups/public/releases/1
