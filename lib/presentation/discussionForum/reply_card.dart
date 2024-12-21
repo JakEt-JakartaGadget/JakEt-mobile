@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:jaket_mobile/presentation/discussionForum/reply_model.dart';
 
 class ReplyCard extends StatefulWidget {
-  const ReplyCard({super.key});
+  final Reply reply;
+
+  const ReplyCard({super.key, required this.reply});
 
   @override
   State<ReplyCard> createState() => _ReplyCardState();
@@ -10,6 +14,7 @@ class ReplyCard extends StatefulWidget {
 class _ReplyCardState extends State<ReplyCard> {
   @override
   Widget build(BuildContext context) {
+    final reply = widget.reply;
     return Container(
         margin: const EdgeInsets.symmetric(vertical: 4),
         decoration: BoxDecoration(
@@ -48,10 +53,11 @@ class _ReplyCardState extends State<ReplyCard> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Discussion Detail
-                    const Row(
+                    Row(
                       children: [
                         // Discussion Owner Username
-                        Text(
+                        const Text(
+                          // TODO: Replace with username
                           'Username',
                           style: TextStyle(
                             fontWeight: FontWeight.w600,
@@ -60,20 +66,21 @@ class _ReplyCardState extends State<ReplyCard> {
                         ),
 
                         // Spacing
-                        SizedBox(width: 8),
+                        const SizedBox(width: 8),
 
                         // Discussion Started Date
                         Row(
                           children: [
-                            Icon(
+                            const Icon(
                               Icons.access_time,
                               color: Color(0xFF666666),
                               size: 12,
                             ),
                             SizedBox(width: 4),
                             Text(
-                              '2 days ago',
-                              style: TextStyle(
+                              DateFormat('yyyy-MM-dd')
+                                  .format(reply.fields.replied),
+                              style: const TextStyle(
                                 color: Color(0xFF666666),
                                 fontSize: 12,
                               ),
@@ -86,9 +93,9 @@ class _ReplyCardState extends State<ReplyCard> {
                     // Discussion Title
                     Container(
                       width: MediaQuery.of(context).size.width - 160,
-                      child: const Text(
-                        'Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet.',
-                        style: TextStyle(
+                      child: Text(
+                        reply.fields.message,
+                        style: const TextStyle(
                           fontWeight: FontWeight.w600,
                           fontSize: 14,
                         ),

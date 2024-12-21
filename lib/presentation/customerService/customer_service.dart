@@ -194,12 +194,6 @@ class _CustomerServiceChatState extends State<CustomerServiceChat> {
                                     "message": messageController.text,
                                   }),
                                 );
-
-                                // Print the entire response to see its structure
-                                print("Full response: $response");
-
-                                // Check if the response indicates success
-                                // This might need to be adjusted based on your actual API response
                                 if (response != null &&
                                     response['status'] == 'success') {
                                   messageController.clear();

@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:jaket_mobile/presentation/discussionForum/discussion.dart';
-import 'package:jaket_mobile/widgets/custom_elevated_button.dart';
+import 'package:jaket_mobile/presentation/discussionForum/discussion_model.dart';
+import 'package:jaket_mobile/presentation/discussionForum/reply_model.dart';
 
 class DiscussionCard extends StatefulWidget {
-  const DiscussionCard({super.key});
+  final DiscussionModel discussion;
+  final Reply? lastReply;
+
+  const DiscussionCard(
+      {super.key, required this.discussion, required this.lastReply});
 
   @override
   State<DiscussionCard> createState() => _DiscussionCardState();
@@ -13,19 +19,32 @@ class DiscussionCard extends StatefulWidget {
 class _DiscussionCardState extends State<DiscussionCard> {
   @override
   Widget build(BuildContext context) {
+    final discussion = widget.discussion;
+    final lastReply = widget.lastReply;
+
     return Container(
-        margin: const EdgeInsets.symmetric(vertical: 4),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: const Color(0xCECECECE),
-            width: 1,
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: const Color(0xFFCECECE), width: 1),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.shade200,
+            blurRadius: 4,
+            spreadRadius: 2,
           ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-          child: Row(
+        ],
+      ),
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Title and metadata
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // User profile picture
               // User Avatar
               Container(
                 height: 54,
@@ -40,126 +59,133 @@ class _DiscussionCardState extends State<DiscussionCard> {
                   size: 30,
                 ),
               ),
-
-              // Discussion Preview
-              Padding(
-                padding: const EdgeInsets.only(left: 16),
+              const SizedBox(width: 12),
+              Expanded(
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Discussion Detail
-                    const Row(
+                    // Discussion title
+                    Text(
+                      discussion.fields.topic,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 4),
+                    // Discussion metadata
+                    Row(
                       children: [
-                        // Discussion Owner Username
-                        Text(
-                          'Username',
+                        // Owner username
+                        const Text(
+                          // ganti ke username dari discussion.owner
+                          "Username",
                           style: TextStyle(
-                            fontWeight: FontWeight.w600,
                             fontSize: 12,
+                            color: Colors.black54,
                           ),
                         ),
-
-                        // Spacing
-                        SizedBox(width: 8),
-
-                        // Discussion Started Date
+                        const SizedBox(width: 8),
+                        // Started date
                         Row(
                           children: [
-                            Icon(
+                            const Icon(
                               Icons.access_time,
-                              color: Color(0xFF666666),
                               size: 12,
+                              color: Colors.grey,
                             ),
-                            SizedBox(width: 4),
+                            const SizedBox(width: 4),
                             Text(
-                              '2 days ago',
-                              style: TextStyle(
-                                color: Color(0xFF666666),
+                              DateFormat('yyyy-MM-dd - kk:mm')
+                                  .format(widget.discussion.fields.started),
+                              style: const TextStyle(
                                 fontSize: 12,
+                                color: Colors.grey,
                               ),
                             ),
                           ],
-                        )
+                        ),
                       ],
                     ),
-
-                    // Discussion Title
-                    Container(
-                      width: MediaQuery.of(context).size.width - 210,
-                      child: const Text(
-                        'Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet.',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 14,
-                        ),
-                      ),
-                    ),
-
-                    // Additionals
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width - 210,
-                      child: Wrap(
-                        children: [
-                          // Last Reply Info
-                          const Row(
-                            children: [
-                              // Message Icon
-                              Icon(
-                                Icons.message_rounded,
-                                color: Color(0xFF666666),
-                                size: 10,
-                              ),
-
-                              // Spacing
-                              SizedBox(width: 4),
-
-                              // Last Reply Username
-                              Text(
-                                'Last reply: by Username',
-                                style: TextStyle(
-                                  color: Color(0xFF666666),
-                                  fontSize: 9,
-                                ),
-                              ),
-                            ],
-                          ),
-
-                          Container(
-                            height: 15.0,
-                            child: CustomElevatedButton(
-                              width: 120.0,
-                              text: ' ',
-                              leftIcon: const Text(
-                                'View More >',
-                                style: TextStyle(
-                                  color: Color(0xFF527EEE),
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 12,
-                                ),
-                              ),
-                              buttonStyle: ButtonStyle(
-                                elevation: WidgetStateProperty.all(0),
-                                backgroundColor:
-                                    WidgetStateProperty.all(Colors.transparent),
-                              ),
-                              onPressed: () {
-                                Get.to(
-                                  const Discussion(),
-                                  transition: Transition.rightToLeft,
-                                  duration: const Duration(milliseconds: 300),
-                                );
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                    )
                   ],
                 ),
               ),
             ],
           ),
-        ));
+          const SizedBox(height: 12),
+
+          // Last reply info
+          Row(
+            children: [
+              // Message Icon
+              // TODO: Change to user profile page
+              const Icon(
+                Icons.message_rounded,
+                color: Color(0xFF666666),
+                size: 10,
+              ),
+
+              // Spacing
+              const SizedBox(width: 4),
+
+              // Last Reply Username
+              lastReply != null
+                  ? const Text(
+                      // TODO: ganti sama username dari lastreply
+                      "Last Reply by: Username",
+                      style: TextStyle(
+                        fontSize: 10,
+                        color: Color(0xFF666666),
+                      ),
+                    )
+                  : const Text(
+                      // lastReply.sender.username,
+                      "No Replies Yet",
+                      style: TextStyle(
+                        fontSize: 10,
+                        color: Color(0xFF666666),
+                      ),
+                    ),
+            ],
+          ),
+          const SizedBox(height: 12),
+
+          // Action button
+          Align(
+            alignment: Alignment.bottomRight,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.blue,
+                backgroundColor: Colors.blue.shade50,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                elevation: 0,
+              ),
+              onPressed: () {
+                Get.to(
+                  Discussion(
+                    discussion: discussion,
+                  ),
+                  transition: Transition.rightToLeft,
+                  duration: const Duration(milliseconds: 300),
+                );
+              },
+              child: const Text(
+                "View More >",
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blue,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
