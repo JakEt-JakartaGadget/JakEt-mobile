@@ -13,30 +13,22 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  late Future<List<UserData>> userDataFuture;
-
-  @override
-  void initState() {
-    super.initState();
-    userDataFuture = fetchProfile();
-  }
-
-  Future<List<UserData>> fetchProfile() async {
-    final CookieRequest request = Provider.of<CookieRequest>(context, listen: false);
+  Future<UserData?> fetchProfile(CookieRequest request) async {
     final response = await request.get('http://127.0.0.1:8000/profile/json/');
+    final currentUser = request.jsonData['username'];
     var data = response;
 
-    List<UserData> listProfile = [];
     for (var d in data) {
-      if (d != null) {
-        listProfile.add(UserData.fromJson(d));
+      if (d != null && d['fields']['username'] == currentUser) {
+        return UserData.fromJson(d);
       }
     }
-    return listProfile;
+    return null;
   }
 
   @override
   Widget build(BuildContext context) {
+    final request = context.watch<CookieRequest>();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Profile'),
@@ -44,9 +36,9 @@ class _ProfilePageState extends State<ProfilePage> {
         elevation: 0,
         centerTitle: true,
       ),
-      body: FutureBuilder<List<UserData>>(
-        future: userDataFuture,
-        builder: (context, snapshot) {
+      body: FutureBuilder<UserData?>(
+        future: fetchProfile(request),
+        builder: (context, AsyncSnapshot<UserData?> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
@@ -55,87 +47,140 @@ class _ProfilePageState extends State<ProfilePage> {
             return const Center(child: Text('Error fetching profile'));
           }
 
-          if (snapshot.data == null || snapshot.data!.isEmpty) {
-            // Jika data kosong, arahkan ke halaman create profile
+          if (snapshot.data == null) {
             Future.delayed(Duration.zero, () {
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => CreateProfilePage()),
               );
             });
-            return const Center(child: Text('No profile found, redirecting to profile creation...'));
+            return const Center(
+                child: Text('No profile found, redirecting to profile creation...'));
           }
 
-          final profile = snapshot.data!.first.fields;
+          final profile = snapshot.data!.fields;
 
           return Padding(
             padding: const EdgeInsets.all(16.0),
             child: ListView(
               children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  alignment: Alignment.center,
+                Center(
                   child: Column(
                     children: [
                       CircleAvatar(
-                        radius: 50,
-                        backgroundImage: NetworkImage(profile.profilePicture),
+                        radius: 60,
+                        backgroundImage: NetworkImage(
+                          profile.profilePicture.isNotEmpty
+                              ? 'http://127.0.0.1:8000/media/${profile.profilePicture}'
+                              : 'assets/images/profile/blank-profile.jpg',
+                        ),
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: 12),
                       RichText(
                         text: TextSpan(
                           text: 'Hello ',
                           style: const TextStyle(
-                            color: Colors.deepPurple,
-                            fontSize: 24,
+                            color: Colors.black, // Warna hitam
+                            fontSize: 28,
                             fontWeight: FontWeight.bold,
                           ),
                           children: [
                             TextSpan(
                               text: profile.profileName,
                               style: const TextStyle(
-                                color: Colors.black,
-                                fontSize: 24,
+                                color: Colors.deepPurple,
+                                fontSize: 28,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            TextSpan(
+                            const TextSpan(
                               text: '!',
                               style: TextStyle(
                                 color: Colors.deepPurple,
-                                fontSize: 24,
+                                fontSize: 28,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
                           ],
                         ),
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: 4),
                       Text(
                         profile.username,
-                        style: const TextStyle(fontSize: 16, color: Colors.grey),
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.grey,
+                        ),
                       ),
                     ],
                   ),
                 ),
-                _buildProfileDetailRow('Name', profile.profileName),
-                _buildProfileDetailRow('Username', profile.username),
-                _buildProfileDetailRow('Phone', profile.phone),
-                _buildProfileDetailRow('Email', profile.email),
-                _buildProfileDetailRow('About', profile.about),
+                const SizedBox(height: 24),
+                Card(
+                  elevation: 2,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Personal Information',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        _buildProfileDetailRow('Profile Name', profile.profileName),
+                        _buildProfileDetailRow('Username', profile.username),
+                        _buildProfileDetailRow('Phone', profile.phone),
+                        _buildProfileDetailRow('Email', profile.email),
+                        _buildProfileDetailRow('About me', profile.about),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
                 Align(
                   alignment: Alignment.centerRight,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      // Add edit functionality here
+                  child: GestureDetector(
+                    onTap: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => EditProfilePage(profileData: snapshot.data!.first),
+                          builder: (context) =>
+                              EditProfilePage(profileData: snapshot.data!),
                         ),
                       );
                     },
-                    child: const Text('Edit'),
+                    child: Container(
+                      width: 90,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [
+                            Color(0xFF6D0CC9), // Warna awal gradien
+                            Color(0xFF2E29A6), // Warna akhir gradien
+                          ],
+                          begin: Alignment.centerLeft,
+                          end: Alignment.centerRight,
+                        ),
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                      child: const Center(
+                        child: Text(
+                          'Edit',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.white, // Warna teks
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               ],
@@ -151,8 +196,8 @@ class _ProfilePageState extends State<ProfilePage> {
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
         children: [
-          Container(
-            width: 100,
+          SizedBox(
+            width: 120,
             child: Text(
               title,
               style: const TextStyle(fontWeight: FontWeight.bold),
