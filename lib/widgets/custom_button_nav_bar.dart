@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:get/get.dart';
 import 'package:jaket_mobile/presentation/detail/all_product.dart'; // Import ProductPagee
 import 'package:jaket_mobile/presentation/homepage/homepage.dart';
+import 'package:jaket_mobile/presentation/service_page/service_page.dart';
 import 'package:jaket_mobile/presentation/wishlist/wishlist.dart';
 // import 'package:jaket_mobile/presentation/service_center/service_center_page.dart'; // Import ServiceCenterPage
 // import 'package:jaket_mobile/presentation/article/article_page.dart'; // Import ArticlePage
@@ -20,7 +21,7 @@ class CustomBottomNavBar extends StatelessWidget {
         Get.offAll(() => const HomePage());
         break;
       case 1:
-        // Get.offAll(() => const ServiceCenterPage());
+        Get.offAll(() => const ServiceCenterPage());
         break;
       case 3:
         // Get.offAll(() => const ArticlePage());
@@ -35,7 +36,6 @@ class CustomBottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Dapatkan current route untuk menentukan selectedIndex
     final String currentRoute = Get.currentRoute;
     int selectedIndex;
 

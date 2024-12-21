@@ -150,7 +150,7 @@ class AuthController extends ChangeNotifier {
     return _favoriteProducts.any((product) => product.pk == phoneId);
   }
 
-    Future<List<Review>> fetchReviews(String productId) async {
+  Future<List<Review>> fetchReviews(String productId) async {
     if (!_isLoggedIn) {
       throw Exception('Anda harus login untuk melihat ulasan.');
     }
