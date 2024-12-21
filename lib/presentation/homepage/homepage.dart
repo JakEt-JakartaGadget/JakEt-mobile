@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:jaket_mobile/presentation/article/article.dart';
 import 'package:jaket_mobile/presentation/homepage/choice_row.dart';
 import 'package:jaket_mobile/presentation/profile/profile.dart';
 import 'package:jaket_mobile/widgets/custom_button_nav_bar.dart';
@@ -7,24 +8,33 @@ import 'package:jaket_mobile/widgets/custom_slider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
+
   static const List<Widget> _widgetOptions = <Widget>[
     Center(child: Text('Home Page Content')),
     Center(child: Text('Service Center Content')),
     Center(child: Text('Product Page Content')),
-    Center(child: Text('Article Page Content')),
     Center(child: Text('Wishlist Page Content')),
   ];
 
   void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+    if (index == 3) {
+      // Navigasi langsung ke halaman artikel
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const ArticleListPage()),
+      );
+    } else {
+      setState(() {
+        _selectedIndex = index;
+      });
+    }
   }
 
   @override
@@ -46,9 +56,14 @@ class _HomePageState extends State<HomePage> {
                 child: TextField(
                   decoration: InputDecoration(
                     hintText: 'Search by brand or model',
-                    hintStyle:
-                        GoogleFonts.inter(color: Colors.grey[800], fontSize: 13.0),
-                    prefixIcon: Icon(Icons.search, color: Colors.grey[900]),
+                    hintStyle: GoogleFonts.inter(
+                      color: Colors.grey[800],
+                      fontSize: 13.0,
+                    ),
+                    prefixIcon: Icon(
+                      Icons.search,
+                      color: Colors.grey[900],
+                    ),
                     border: InputBorder.none,
                   ),
                 ),
@@ -67,7 +82,7 @@ class _HomePageState extends State<HomePage> {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => ProfilePage()), // Arahkan ke halaman ProfilePage
+                    MaterialPageRoute(builder: (context) => ProfilePage()),
                   );
                 },
                 child: const Padding(
@@ -92,7 +107,9 @@ class _HomePageState extends State<HomePage> {
             const SizedBox(height: 16.0),
             Container(
               padding: const EdgeInsets.all(16.0),
-              child: _widgetOptions.elementAt(_selectedIndex),
+              child: _widgetOptions.elementAt(
+                _selectedIndex < 3 ? _selectedIndex : 0,
+              ),
             ),
           ],
         ),

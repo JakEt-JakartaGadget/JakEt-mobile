@@ -75,9 +75,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Edit Profile'),
-        backgroundColor: Colors.transparent, // Membuat app bar transparan
-        elevation: 0, // Menghilangkan bayangan pada app bar
-        foregroundColor: Colors.white, // Warna teks app bar putih
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        foregroundColor: Colors.white,
       ),
       body: SingleChildScrollView(
         child: Padding(

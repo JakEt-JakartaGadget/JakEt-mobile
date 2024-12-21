@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:jaket_mobile/presentation/article/article_add.dart';
 import 'package:jaket_mobile/presentation/article/article_detail.dart';
 import 'package:provider/provider.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
@@ -25,7 +24,6 @@ class _ArticleListPageState extends State<ArticleListPage> {
     try {
       final response = await request.get('http://127.0.0.1:8000/article/json/');
       List<dynamic> data = response;
-
       return data.map((json) => Artikel.fromJson(json)).toList();
     } catch (e) {
       throw Exception('Failed to fetch articles: $e');
@@ -41,17 +39,6 @@ class _ArticleListPageState extends State<ArticleListPage> {
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const AddArticlePage()),
-              );
-            },
-          ),
-        ],
       ),
       body: FutureBuilder<List<Artikel>>(
         future: _articleFuture,

@@ -6,15 +6,15 @@ class CustomBottomNavBar extends StatelessWidget {
   final Function(int) onItemTapped;
 
   const CustomBottomNavBar({
-    super.key,
+    Key? key,
     required this.selectedIndex,
     required this.onItemTapped,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 100, 
+      height: 100,
       child: Stack(
         alignment: Alignment.center,
         clipBehavior: Clip.none,
@@ -48,7 +48,7 @@ class CustomBottomNavBar extends StatelessWidget {
                   label: 'Service Center',
                 ),
                 BottomNavigationBarItem(
-                  icon: SizedBox.shrink(), 
+                  icon: SizedBox.shrink(),
                   label: '',
                 ),
                 BottomNavigationBarItem(
@@ -59,13 +59,11 @@ class CustomBottomNavBar extends StatelessWidget {
                   icon: Icon(Icons.favorite_border),
                   label: 'Wishlist',
                 ),
-                
               ],
             ),
           ),
-
           Positioned(
-            bottom: 10, 
+            bottom: 10,
             child: GestureDetector(
               onTap: () => onItemTapped(2),
               child: Column(
@@ -74,24 +72,24 @@ class CustomBottomNavBar extends StatelessWidget {
                     width: 70,
                     height: 70,
                     decoration: BoxDecoration(
-                      color: const Color(0xFF6D0CC9), 
+                      color: const Color(0xFF6D0CC9),
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withOpacity(0.2),
                           spreadRadius: 3,
                           blurRadius: 5,
-                          offset: const Offset(0, 3), 
+                          offset: const Offset(0, 3),
                         ),
                       ],
                     ),
                     child: const Icon(
                       Icons.smartphone_outlined,
                       size: 30,
-                      color: Colors.white, 
+                      color: Colors.white,
                     ),
                   ),
-                  const SizedBox(height: 4), 
+                  const SizedBox(height: 4),
                   Text(
                     'Product',
                     style: GoogleFonts.inter(
