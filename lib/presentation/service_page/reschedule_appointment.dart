@@ -325,7 +325,7 @@ class _RescheduleTicketPageState extends State<RescheduleTicketPage> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30.0),
                       ),
-                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      backgroundColor: const Color.fromARGB(255, 4, 93, 236),
                     ),
                   ),
                 ],

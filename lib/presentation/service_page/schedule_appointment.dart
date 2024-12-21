@@ -285,8 +285,7 @@ class _TicketFormPageState extends State<TicketFormPage> {
                         final response = await request.postJson(
                           "http://10.0.2.2:8000/tiket/create-ticket-flutter/",
                           jsonEncode(<String, dynamic>{
-                            'service_center_id':
-                                widget.serviceCenter.pk.toString(),
+                            'service_center_id': widget.serviceCenter.pk.toString(),
                             'service_date': serviceDate,
                             'service_time': serviceTime,
                             'specific_problems': _specificProblems,
@@ -304,8 +303,7 @@ class _TicketFormPageState extends State<TicketFormPage> {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Text(
-                                  response['message'] ??
-                                      "An error occurred. Please try again.",
+                                  response['message'] ?? "An error occurred. Please try again.",
                                 ),
                               ),
                             );
@@ -323,7 +321,7 @@ class _TicketFormPageState extends State<TicketFormPage> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30.0),
                       ),
-                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      backgroundColor: const Color.fromARGB(255, 4, 93, 236),
                     ),
                   ),
                 ],
