@@ -57,6 +57,8 @@ Dengan **JakEt**, kami berharap dapat memberikan pengalaman digital yang lebih m
     - Dikerjakan oleh : Abraham Jordy Ollen
 1. Customer Service Chat (Chat antara User yang login dengan admin)
     - Dikerjakan oleh : Ida Made Revindra Dikta Mahendra
+1. Review Product (Review user terhadap suatu product)
+    - Dikerjakan oleh : Anthony Edbert Feriyanto
 
 ## 📈 Sumber Initial Dataset 📈
 [https://www.kaggle.com/code/kerneler/starter-gadgets360-electronics-dataset-095343b9-a/input?select=mobiles.csv](https://www.kaggle.com/code/kerneler/starter-gadgets360-electronics-dataset-095343b9-a/input?select=mobiles.csv)
