@@ -170,7 +170,7 @@ class _ReviewListState extends State<ReviewList> {
   Widget build(BuildContext context) {
     final authController = Provider.of<AuthController>(context, listen: false);
     final currentUsername = authController.username;
-    bool hasUserReview = widget.reviews.any((review) => review.user.fields.username == currentUsername);
+    bool hasUserReview = widget.reviews.any((review) => review.user.username == currentUsername);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -238,7 +238,7 @@ class _ReviewListState extends State<ReviewList> {
                   itemCount: _filteredReviews.length,
                   itemBuilder: (context, index) {
                     final review = _filteredReviews[index];
-                    final isOwner = authController.isLoggedIn && review.user.fields.username == currentUsername;
+                    final isOwner = authController.isLoggedIn && review.user.username == currentUsername;
 
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 5.0),
