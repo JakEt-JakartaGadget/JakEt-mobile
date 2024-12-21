@@ -1,5 +1,3 @@
-// lib/screens/add_edit_review_page.dart
-
 import 'package:flutter/material.dart';
 import 'package:jaket_mobile/app_module/data/model/review.dart';
 import 'package:jaket_mobile/auth_controller.dart';
@@ -45,21 +43,22 @@ class _AddEditReviewPageState extends State<AddEditReviewPage> {
       bool success;
       if (widget.review == null) {
         success = await authController.addReview(widget.productId, _content, _rating);
-        if (success) {
-        }
       } else {
         success = await authController.editReview(widget.review!.id, content: _content, rating: _rating);
-        if (success) {
-        }
       }
 
       if (success) {
-        Navigator.pop(context, true); 
+        Navigator.pop(context, true); // Kembali dengan hasil sukses
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Gagal menyimpan ulasan.')),
+        );
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: $e')),
+        SnackBar(content: Text('Terjadi kesalahan: $e')),
       );
+      print('Error submitting review: $e');
     } finally {
       setState(() {
         _isLoading = false;
@@ -81,56 +80,57 @@ class _AddEditReviewPageState extends State<AddEditReviewPage> {
             ? const Center(child: CircularProgressIndicator())
             : Form(
                 key: _formKey,
-                child: Column(
-                  children: [
-                    const Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
                         'Rating:',
                         style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
                       ),
-                    ),
-                    const SizedBox(height: 8.0),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: List.generate(5, (index) {
-                        return IconButton(
-                          icon: index < _rating
-                              ? const Icon(Icons.star, color: Colors.amber)
-                              : const Icon(Icons.star_border, color: Colors.amber),
-                          onPressed: () {
-                            setState(() {
-                              _rating = index + 1;
-                            });
-                          },
-                        );
-                      }),
-                    ),
-                    const SizedBox(height: 16.0),
-                    // Konten Ulasan
-                    TextFormField(
-                      initialValue: _content,
-                      decoration: const InputDecoration(
-                        labelText: 'Ulasan',
-                        border: OutlineInputBorder(),
+                      const SizedBox(height: 8.0),
+                      Row(
+                        children: List.generate(5, (index) {
+                          return IconButton(
+                            icon: index < _rating
+                                ? const Icon(Icons.star, color: Colors.amber)
+                                : const Icon(Icons.star_border, color: Colors.amber),
+                            onPressed: () {
+                              setState(() {
+                                _rating = index + 1;
+                              });
+                            },
+                          );
+                        }),
                       ),
-                      maxLines: 5,
-                      validator: (value) {
-                        if (value == null || value.trim().isEmpty) {
-                          return 'Ulasan tidak boleh kosong.';
-                        }
-                        return null;
-                      },
-                      onSaved: (value) {
-                        _content = value!.trim();
-                      },
-                    ),
-                    const SizedBox(height: 20.0),
-                    ElevatedButton(
-                      onPressed: _submitReview,
-                      child: Text(widget.review == null ? 'Tambah' : 'Perbarui'),
-                    ),
-                  ],
+                      const SizedBox(height: 16.0),
+                      TextFormField(
+                        initialValue: _content,
+                        decoration: const InputDecoration(
+                          labelText: 'Ulasan',
+                          border: OutlineInputBorder(),
+                        ),
+                        maxLines: 5,
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return 'Ulasan tidak boleh kosong.';
+                          }
+                          return null;
+                        },
+                        onSaved: (value) {
+                          _content = value!.trim();
+                        },
+                      ),
+                      const SizedBox(height: 20.0),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: _isLoading ? null : _submitReview,
+                          child: Text(widget.review == null ? 'Tambah' : 'Perbarui'),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
       ),

@@ -64,7 +64,7 @@ class _ReviewListState extends State<ReviewList> {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Align(
+                            const Align(
                               alignment: Alignment.centerLeft,
                               child: const Text(
                                 'Rating:',
@@ -136,16 +136,12 @@ class _ReviewListState extends State<ReviewList> {
                                 rating: rating,
                               );
                               if (success) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('Review berhasil diperbarui.')),
-                                );
+                                widget.onReviewChanged();
                               }
                             } else {
                               success = await authController.addReview(widget.productId, content, rating);
                               if (success) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('Review berhasil ditambahkan.')),
-                                );
+                                widget.onReviewChanged();
                               }
                             }
 
@@ -154,9 +150,6 @@ class _ReviewListState extends State<ReviewList> {
                               Navigator.pop(context);
                             }
                           } catch (e) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('Error: $e')),
-                            );
                           } finally {
                             setStateDialog(() {
                               _isLoading = false;
@@ -231,7 +224,14 @@ class _ReviewListState extends State<ReviewList> {
             ),
           const SizedBox(height: 16.0),
           _filteredReviews.isEmpty
-              ? const Text('Tidak ada ulasan dengan rating ini.')
+              ? 
+              const Column(
+                children: [
+                  Text('Tidak ada ulasan dengan rating ini.'),
+                  SizedBox(height: 10,)
+                ],
+              )
+              
               : ListView.builder(
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
@@ -241,7 +241,7 @@ class _ReviewListState extends State<ReviewList> {
                     final isOwner = authController.isLoggedIn && review.user.username == currentUsername;
 
                     return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      padding: const EdgeInsets.symmetric(vertical: 5.0),
                       child: ReviewCard(
                         review: review,
                         onEdit: isOwner
@@ -271,15 +271,9 @@ class _ReviewListState extends State<ReviewList> {
                                   try {
                                     bool success = await authController.deleteReview(review.id);
                                     if (success) {
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(content: Text('Review berhasil dihapus.')),
-                                      );
                                       widget.onReviewChanged();
                                     }
                                   } catch (e) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(content: Text('Error: $e')),
-                                    );
                                   }
                                 }
                               }

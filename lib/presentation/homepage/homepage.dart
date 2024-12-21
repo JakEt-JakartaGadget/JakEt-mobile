@@ -126,7 +126,7 @@ class _HomePageState extends State<HomePage> {
                         option.fields.ram.toLowerCase().contains(q) ||
                         option.fields.cameraMp.toLowerCase().contains(q) ||
                         option.fields.batteryCapacityMah.toString().contains(q);
-                  }).take(5); // Limit to 5 suggestions
+                  }).take(5); 
                 },
                 onSelected: (ProductEntry selection) {
                   _searchController.text = '${selection.fields.brand} ${selection.fields.model}';
