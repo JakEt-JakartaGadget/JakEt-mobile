@@ -2,13 +2,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:get/get.dart';
+import 'package:jaket_mobile/presentation/article/article.dart';
 import 'package:jaket_mobile/presentation/detail/all_product.dart'; // Import ProductPagee
 import 'package:jaket_mobile/presentation/homepage/homepage.dart';
 import 'package:jaket_mobile/presentation/service_page/service_page.dart';
 import 'package:jaket_mobile/presentation/wishlist/wishlist.dart';
-// import 'package:jaket_mobile/presentation/service_center/service_center_page.dart'; // Import ServiceCenterPage
-// import 'package:jaket_mobile/presentation/article/article_page.dart'; // Import ArticlePage
-// import 'package:jaket_mobile/presentation/wishlist/wishlist_page.dart'; // Import WishlistPage
+
 
 class CustomBottomNavBar extends StatelessWidget {
   const CustomBottomNavBar({
@@ -18,16 +17,16 @@ class CustomBottomNavBar extends StatelessWidget {
   void _navigateTo(int index) {
     switch (index) {
       case 0:
-        Get.offAll(() => const HomePage());
+        Get.to(() => const HomePage());
         break;
       case 1:
-        Get.offAll(() => const ServiceCenterPage());
+        Get.to(() => const ServiceCenterPage());
         break;
       case 3:
-        // Get.offAll(() => const ArticlePage());
+        Get.to(() => const ArticleListPage());
         break;
       case 4:
-        Get.offAll(() => const WishlistPage());
+        Get.to(() => const WishlistPage());
         break;
       default:
         break;
@@ -104,7 +103,6 @@ class CustomBottomNavBar extends StatelessWidget {
               ],
             ),
           ),
-
           Positioned(
             bottom: 10,
             child: GestureDetector(
@@ -134,6 +132,7 @@ class CustomBottomNavBar extends StatelessWidget {
                       color: Colors.white,
                     ),
                   ),
+                  const SizedBox(height: 4),
                   const SizedBox(height: 4),
                   Text(
                     'Product',

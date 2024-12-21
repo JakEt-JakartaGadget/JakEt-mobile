@@ -1,20 +1,8 @@
-class User {
-  final String username;
-  final String profileImageUrl;
-
-  User({required this.username, required this.profileImageUrl});
-
-  factory User.fromJson(Map<String, dynamic> json) {
-    return User(
-      username: json['username'],
-      profileImageUrl: json['profile_image_url'] ?? '',
-    );
-  }
-}
+import 'package:jaket_mobile/presentation/profile/models/profile_entry.dart';
 
 class Review {
   final int id;
-  final User user;
+  final UserData user;
   final String content;
   final int rating;
   final String dateAdded;
@@ -32,7 +20,7 @@ class Review {
   factory Review.fromJson(Map<String, dynamic> json) {
     return Review(
       id: json['id'],
-      user: User.fromJson(json['user']),
+      user: UserData.fromJson(json['user']),
       content: json['content'] ?? '',
       rating: json['rating'],
       dateAdded: json['date_added'],

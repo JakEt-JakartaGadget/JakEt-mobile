@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:jaket_mobile/app_module/data/model/product_entry.dart';
 import 'package:jaket_mobile/auth_controller.dart';
@@ -8,6 +9,7 @@ import 'package:jaket_mobile/presentation/detail/all_product.dart';
 import 'package:jaket_mobile/presentation/detail/detail_product.dart';
 import 'package:jaket_mobile/presentation/homepage/choice_row.dart';
 import 'package:jaket_mobile/presentation/homepage/limited_product.dart';
+import 'package:jaket_mobile/presentation/profile/profile.dart';
 import 'package:jaket_mobile/widgets/custom_button_nav_bar.dart';
 import 'package:jaket_mobile/widgets/custom_slider.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
@@ -70,7 +72,7 @@ class _HomePageState extends State<HomePage> {
   void _onSearchChanged(String query) {
     if (_debounce?.isActive ?? false) _debounce?.cancel();
     _debounce = Timer(const Duration(milliseconds: 300), () {
-      setState(() {}); // Trigger rebuild to update suggestions
+      setState(() {});
     });
   }
 
@@ -220,13 +222,9 @@ class _HomePageState extends State<HomePage> {
               child: GestureDetector(
                 onTap: () {
                   if (authController.isLoggedIn) {
-                    print("User is logged in");
+                    Get.to(const ProfilePage());
                   } else {
-                    print("User not logged in");
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const LoginPage()),
-                    );
+                    Get.to(const LoginPage()); 
                   }
                 },
                 child: const Padding(

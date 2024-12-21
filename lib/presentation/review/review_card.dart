@@ -67,13 +67,13 @@ class _ReviewCardState extends State<ReviewCard> {
             // Ikon Profil dengan Icon default atau gambar pengguna
             CircleAvatar(
               radius: 24,
-              backgroundImage: widget.review.user.profileImageUrl.isNotEmpty
-                  ? NetworkImage(widget.review.user.profileImageUrl)
+              backgroundImage: widget.review.user.fields.profilePicture.isNotEmpty
+                  ? NetworkImage(widget.review.user.fields.profilePicture)
                   : null, // Jika ada gambar, tampilkan
-              child: widget.review.user.profileImageUrl.isEmpty
+              child: widget.review.user.fields.profilePicture.isEmpty
                   ? const Icon(Icons.person, color: Colors.white, size: 24)
                   : null, // Jika tidak ada, tampilkan ikon
-              backgroundColor: widget.review.user.profileImageUrl.isEmpty ? Colors.grey : null,
+              backgroundColor: widget.review.user.fields.profilePicture.isEmpty ? Colors.grey : null,
             ),
             const SizedBox(width: 12.0),
             // Kolom dengan Username, Rating, dan Konten Ulasan
@@ -86,7 +86,7 @@ class _ReviewCardState extends State<ReviewCard> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        widget.review.user.username,
+                        widget.review.user.fields.username,
                         style: const TextStyle(
                           fontSize: 16.0,
                           fontWeight: FontWeight.bold,
